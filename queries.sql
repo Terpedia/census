@@ -131,6 +131,49 @@ WITH coconut AS (
 SELECT COUNT(*) AS cross_source_overlap
 FROM coconut JOIN terokit USING (identity_key);
 
+-- 5d. Typed chemical-identity sets. Prefixing the key type prevents an
+-- InChI string from colliding with an InChIKey or non-canonical SMILES.
+-- Prefer InChI, then InChIKey, then a labeled structure fallback.
+WITH coconut AS (
+  SELECT DISTINCT CASE
+    WHEN NULLIF(TRIM(standard_inchi), '') IS NOT NULL
+      THEN CONCAT('inchi:', TRIM(standard_inchi))
+    WHEN NULLIF(TRIM(standard_inchi_key), '') IS NOT NULL
+      THEN CONCAT('inchikey:', TRIM(standard_inchi_key))
+    WHEN NULLIF(TRIM(canonical_smiles), '') IS NOT NULL
+      THEN CONCAT('smiles:', TRIM(canonical_smiles))
+  END AS identity_set_key
+  FROM `terpedia-489015.terpedia_raw.coconut_terpenoids`
+), terokit AS (
+  SELECT DISTINCT CASE
+    WHEN NULLIF(TRIM(inchi), '') IS NOT NULL
+      THEN CONCAT('inchi:', TRIM(inchi))
+    WHEN NULLIF(TRIM(smiles), '') IS NOT NULL
+      THEN CONCAT('smiles:', TRIM(smiles))
+  END AS identity_set_key
+  FROM `terpedia-489015.terpedia_raw.terokit_molecule_classification`
+  WHERE classification_status = 'confirmed_source_declared_terpenoid'
+), unioned AS (
+  SELECT identity_set_key, 'coconut' AS source FROM coconut
+  WHERE identity_set_key IS NOT NULL
+  UNION ALL
+  SELECT identity_set_key, 'terokit' AS source FROM terokit
+  WHERE identity_set_key IS NOT NULL
+)
+SELECT
+  COUNT(DISTINCT identity_set_key) AS union_set_size,
+  COUNT(DISTINCT IF(source = 'coconut', identity_set_key, NULL))
+    AS coconut_set_size,
+  COUNT(DISTINCT IF(source = 'terokit', identity_set_key, NULL))
+    AS terokit_set_size,
+  COUNT(DISTINCT IF(identity_set_key LIKE 'inchi:%', identity_set_key, NULL))
+    AS inchi_set_members,
+  COUNT(DISTINCT IF(identity_set_key LIKE 'inchikey:%', identity_set_key, NULL))
+    AS inchikey_fallback_members,
+  COUNT(DISTINCT IF(identity_set_key LIKE 'smiles:%', identity_set_key, NULL))
+    AS smiles_fallback_members
+FROM unioned;
+
 -- 6. RDF/SPARQL query templates for https://kb.terpedia.com/sparql.
 -- Run these through requests.get(..., params={'query': query, 'format': 'json'}).
 -- Count terpenoids and descendants:

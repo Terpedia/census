@@ -1,6 +1,6 @@
 # How many terpenes are there?
 
-*Working draft — 2026-09-03*
+*Working draft — 2026-09-04*
 
 ## Abstract
 
@@ -73,6 +73,7 @@ For example: “59,833 records classified as terpenes in dataset X, version Y, d
 - Build a claim-level bibliography with publication date, exact quotation, page, and cited predecessor.
 - Compare strict terpene and broad terpenoid counts using a fixed chemical-identity policy.
 - Reproduce the 59,833-record dataset count if the underlying COCONUT release is available.
+- Resolve PubChem CIDs for every assigned `T#` by InChI/InChIKey, retaining one-to-many and unresolved mappings.
 - Add a figure showing estimates as labeled claims, with scope encoded separately from year.
 
 ## 7. Terpedia data census: BigQuery and RDF
@@ -104,19 +105,21 @@ category evidence is not independent chemical proof.
 
 ### 7.1 COCONUT–TeroKit cross-source union
 
-The first executed cross-source join, run in BigQuery in `us-central1` on
-2026-09-03, found **268,924 unique chemical identities** across the confirmed
-COCONUT terpenoid table and the confirmed source-declared TeroKit terpenoid
-view. The source-specific counts were 199,234 COCONUT identities and 145,354
-TeroKit identities, with **75,664 identities in common**:
+The first executed cross-source set operation, run in BigQuery in `us-central1`
+on 2026-09-03, found **268,924 unique chemical identities** across the
+confirmed COCONUT terpenoid table and the confirmed source-declared TeroKit
+terpenoid view. The source-specific sets contained 199,234 COCONUT identities
+and 145,354 TeroKit identities, with **75,664 identities in common**:
 
 `199,234 + 145,354 - 75,664 = 268,924`
 
-This is the first measured Terpedia cross-source result, but it is not yet the
-Terpedia-wide total. The join used standard InChI because that key is currently
-available in both tables; a final release should rerun it after both sources
-pass through the same canonicalization pipeline and should retain both the
-original and canonical keys. The result is stored in
+The operation first deduplicated each source into a typed identity set using
+`inchi:<standard InChI>`, then `inchikey:<InChIKey>`, then a labeled structure
+fallback where necessary. All 344,588 source-set members in this run used the
+standard-InChI key; no InChIKey or SMILES fallback was required. This is the
+first measured Terpedia cross-source result, but it is not yet the Terpedia-wide
+total. A final release should still retain both the original and canonical
+keys and rerun the set operation after shared structure standardization. The result is stored in
 [`data/reports/coconut-terokit-union-20260903.json`](data/reports/coconut-terokit-union-20260903.json).
 
 ### 7.2 Reaction-product coverage proxy
@@ -142,6 +145,30 @@ Until that join is executed, **3,500 is the observed local product-ID
 universe, not the number of terpene products**. A product-side reaction edge
 also indicates a modeled biochemical transformation, not proof that the
 reaction occurs in a particular organism in vivo.
+
+### 7.3 Assigned Terpedia identity set
+
+To make the union addressable for downstream curation, the 268,924-member
+COCONUT–TeroKit set is materialized as the BigQuery table
+`terpedia-489015.terpedia_core.terpene_identity_set`. Each row receives a
+deterministic Terpedia identifier in the form `T000001`, `T000002`, and so on;
+the assignment is ordered lexically by the typed identity-set key and is
+therefore stable only for the stated snapshot.
+
+Each row retains the identity key type, InChI, InChIKey and SMILES when
+available, source memberships, source record identifiers, classification
+statuses, source releases, manifest URIs, and source-file URIs. The current
+materialization uses the following priority for the set key:
+
+1. `inchi:<standard InChI>`;
+2. `inchikey:<InChIKey>`; and
+3. `smiles:<structure>` as an explicitly labeled fallback.
+
+All 268,924 current rows use the standard-InChI key. The `T#` identifier is a
+Terpedia curation handle, not a chemical identifier and not a claim that the
+record has independent experimental confirmation. Future refreshes must either
+preserve the existing mapping or publish a versioned crosswalk before assigning
+new T# values.
 
 The final report should publish at least three totals:
 

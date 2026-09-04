@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-09-03",
   "location": "us-central1",
-  "identity_key": "standard_inchi",
+  "identity_set_key": "typed standard InChI, then InChIKey, then structure fallback",
   "sources": {
     "coconut_terpenoids": {
       "raw_rows": 199405,
@@ -17,9 +17,14 @@
   "cross_source_overlap": 75664,
   "cross_source_union": 268924,
   "calculation": "199234 + 145354 - 75664",
+  "set_key_counts": {
+    "inchi": 344588,
+    "inchikey_fallback": 0,
+    "smiles_fallback": 0
+  },
   "caveats": [
     "This is a COCONUT-plus-TeroKit union, not the Terpedia-wide total.",
-    "The first join uses standard InChI; final production reporting should use a shared canonicalization pipeline or InChIKey.",
+    "The set key prefers standard InChI, then InChIKey, then a structure fallback; this run used standard InChI for every member.",
     "Classification evidence is source-declared and is not independent chemical proof."
   ]
 }
