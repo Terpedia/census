@@ -1,0 +1,53 @@
+# Source ledger
+
+Search performed 2026-09-03 for the requested phrase family: `“there are … N terpenes”`, plus targeted searches for historical estimates.
+
+## User-provided slide deck
+
+**TerpID**, Google Slides, accessed 2026-09-03. Slide 2, “How many terpenes are there?”, is a compilation of quoted estimates labeled 10,000, 20,000, 30,000, 40,000, 50,000, 60,000, 70,000, 80,000, 90,000, and 100,000. The slide ends with “Is there a definitive list? (seemingly not)” and “Terpedia should aim to be a definitive list.”
+
+- Deck: https://docs.google.com/presentation/d/1jatvTivzJOlMUOiY770WjIMns1YgXgCRFnzGRk6wLeg/edit
+- Important limitation: the slide’s hyperlinks point to Google search queries, not stable source pages. The underlying pages must be resolved before the quotations can be treated as verified citations.
+- Slide 3 records a separate lead: PubChem “has 118,055,036 structures.” This is a total PubChem structure count, not a terpene count, and should not enter the estimate series.
+
+## Sources located
+
+1. **Han et al. (2007), “Metabolic engineering of terpenoids in plants.”** PubMed records the review and its abstract: “Terpenoids are present in all organisms but are especially abundant in plants, with more than 30,000 compounds.”
+   - https://pubmed.ncbi.nlm.nih.gov/17822023/
+   - Primary bibliographic record and abstract; the number is in the abstract.
+
+2. **Andre et al. (2020), “Anti-Cancer Potential of Cannabinoids, Terpenes, and Flavonoids Present in Cannabis.”** The review states that more than 20,000 terpenes appear in nature and that about 200 are found in cannabis.
+   - https://pmc.ncbi.nlm.nih.gov/articles/PMC7409346/
+   - Peer-reviewed review; exact underlying references still need to be followed.
+
+3. **Sukakul (2020), *Fragrance terpenes* (doctoral thesis).** The thesis states: “about 8,000 terpenes and 30,000 terpenoids are known in the literature,” and explicitly discusses the distinction between hydrocarbons and oxygenated derivatives.
+   - https://lucris.lub.lu.se/ws/portalfiles/portal/165305172/Avhandling_Thanisorn_Sukakul_without_papers.pdf
+   - Full-text thesis; inspect reference 67 and its publication date.
+
+4. **Teoh et al. (2023), “The Chemical Space of Terpenes: Insights from Data Science and AI.”** Search results report that the authors included 59,833 terpenes from the COCONUT natural-products resource, while noting that the latest prior reference they found claimed over 55,000.
+   - https://pmc.ncbi.nlm.nih.gov/articles/PMC9961535/
+   - https://arxiv.org/abs/2110.15047
+   - The COCONUT inclusion count is computational/database evidence, not automatically a census of unique natural structures.
+
+5. **Büchele (2020), *New Approaches to Sustainable Terpene Modification and Application*.** Page 24/25 states that about 8,000 terpenes and 30,000 terpenoids are known, and gives historical context for the isoprene rule.
+   - https://publikationen.bibliothek.kit.edu/1000105544/57592658
+   - Full-text institutional thesis; useful corroboration, but not independent evidence if it cites the same predecessor.
+
+6. **Wikipedia, “Terpene.”** The page currently summarizes the field as an estimated 55,000 terpene and terpenoid chemical entities and cites Dev (1989), *Natural Products of Woody Plants*.
+   - https://en.wikipedia.org/wiki/Terpene
+   - Discovery aid only. The Dev source and page 691 must be checked directly before using the 55,000 figure as historical evidence.
+
+7. **Bohlmann & Keeling (2008), “Terpenoid biomaterials.”** The PubMed abstract states that terpenoids/isoprenoids encompass more than 40,000 structures and are the largest class of known plant metabolites. The Wiley version gives the same claim and describes it as a conservative estimate.
+   - https://pubmed.ncbi.nlm.nih.gov/18476870/
+   - https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-313X.2008.03449.x
+   - Strong source for the slide’s 40,000 line; it counts broad plant terpenoids, not strict terpene hydrocarbons.
+
+## Search-result leads not yet accepted as evidence
+
+- Popular cannabis education pages repeat 30,000, 55,000, or 200+ figures without consistently defining the counted universe.
+- “More than 100 terpenes in cannabis” is a plant-specific claim and should not be mixed with global counts.
+- Search snippets sometimes conflate terpenes, terpenoids, flavonoids, and all phytochemicals.
+
+## Citation policy for this repository
+
+Each numerical claim should eventually record: exact wording, source type, publication year, cited predecessor, chemical definition, counted entities, database/version if applicable, and whether the number is a lower bound, estimate, or reproducible record count.
