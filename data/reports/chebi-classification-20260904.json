@@ -1,0 +1,57 @@
+{
+  "analysis_date": "2026-09-04",
+  "project": "terpedia-489015",
+  "location": "us-central1",
+  "candidate_table": "terpedia_core.terpene_identity_set",
+  "ontology_table": "terpedia_core.chebi_terpene_ontology_239_20260904",
+  "mapping_table": "terpedia_core.terpene_chebi_classification_20260904",
+  "evidence_table": "terpedia_core.terpene_classification_evidence_20260904_v2",
+  "ontology_release": "ChEBI 239",
+  "ontology_version_iri": "http://purl.obolibrary.org/obo/chebi/239/chebi.owl",
+  "ontology_source_uri": "gs://terpedia-knowledge-raw/raw/chebi/objects/3df51b665dfa54499a41482a2456851983f50b709cefb4c5e9aaeb71a95e6814/chebi.owl",
+  "ontology_source_sha256": "3df51b665dfa54499a41482a2456851983f50b709cefb4c5e9aaeb71a95e6814",
+  "boundary": {
+    "terpene_root": "CHEBI:35186",
+    "terpenoid_root": "CHEBI:26873",
+    "closure": "transitive closure over asserted named rdfs:subClassOf edges",
+    "combined_rule": "union of the two closures",
+    "deprecated_classes_excluded": true
+  },
+  "ontology_counts": {
+    "nonobsolete_terpene_classes_including_root": 594,
+    "nonobsolete_terpenoid_classes_including_root": 11086,
+    "nonobsolete_combined_classes_including_roots": 11653,
+    "combined_classes_with_inchikey": 11318,
+    "distinct_full_inchikeys": 11307,
+    "distinct_connectivity_blocks": 9805
+  },
+  "t_id_mapping": {
+    "candidate_t_ids": 268924,
+    "exact_full_inchikey_t_ids": 6585,
+    "exact_full_inchikey_percent": 2.4486,
+    "exact_terpene_t_ids": 273,
+    "exact_terpenoid_t_ids": 6320,
+    "exact_both_boundaries_t_ids": 8,
+    "exact_t_ids_with_multiple_chebi_classes": 2,
+    "connectivity_match_t_ids": 23848,
+    "connectivity_match_percent": 8.8679,
+    "connectivity_only_t_ids": 17263,
+    "connectivity_t_ids_with_multiple_chebi_classes": 5496,
+    "chebi_classes_exactly_represented_in_t_ids": 6587,
+    "chebi_classes_connectivity_represented_in_t_ids": 9436
+  },
+  "evidence_tiers": {
+    "A_directly_characterized_tps_product": 54,
+    "B_chebi_ontology_confirmed": 6551,
+    "C_source_declared_candidate": 262319,
+    "validated_union_A_or_B": 6605,
+    "validated_union_A_or_B_percent": 2.4561,
+    "direct_marts_and_exact_chebi_overlap": 34
+  },
+  "source_support_for_exact_chebi_matches": {
+    "two_defining_sources": 4440,
+    "coconut_only": 2145,
+    "terokit_only": 0
+  },
+  "interpretation": "An exact full-InChIKey match to a class inside the declared ChEBI closures independently supports chemical-class membership at the ontology boundary. Connectivity-only matches are sensitivity evidence and do not confer tier B because stereochemical identity is unresolved. Tier A takes precedence over tier B. Absence from ChEBI is not evidence of non-terpene status."
+}

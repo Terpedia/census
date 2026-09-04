@@ -12,7 +12,10 @@ terpenoids; and a 2023 study assembled 59,833 database records. These claims
 count different chemical universes. In a dated Terpedia snapshot, exact
 standard-InChI unioning of COCONUT and source-classified TeroKit records yields
 268,924 candidate terpene/terpenoid identities, of which 225,905 have an exact
-PubChem CID match. This is a candidate-identity census, not a count of
+PubChem CID match. An independent ChEBI Release 239 ontology audit confirms
+6,585 by exact full-InChIKey, and the union of that set with 54 directly
+characterized MARTS terpene-synthase products contains 6,605 identities
+(2.4561%). This is a candidate-identity census, not a count of
 independently verified natural terpenes: source classification, chemical
 identity, natural occurrence, experimental measurement, and biosynthetic
 evidence remain separate assertions. We therefore report counts as scoped,
@@ -93,10 +96,12 @@ The census uses three reporting tiers that must not be collapsed:
 
 The current 268,924 result belongs to the **candidate identity** tier. A
 PubChem or ChEBI identifier resolves identity but does not by itself establish
-terpene membership. The validated tier requires an explicit source class or
-ontology path to a declared terpene/terpenoid class; structure heuristics may
-flag candidates for review but cannot confirm them. Counts should also be
-reported under multiple identity policies—stereochemistry-preserving,
+terpene membership. The validated tier requires an exact identity link to an
+explicit ontology path under the declared terpene/terpenoid boundary or direct
+curated biochemical evidence; source labels remain candidate evidence.
+Structure heuristics may flag candidates for review but cannot confirm them.
+Counts should also be reported under multiple identity
+policies—stereochemistry-preserving,
 standard-InChI, connectivity-only, and parent structure after salt/mixture
 normalization—to expose sensitivity to deduplication choices.
 
@@ -268,6 +273,14 @@ the same field. The external source coverage currently materialized is:
 | `patent_compound_search` | 1,325 | 15,395 |
 | `unii_records` | 3,204 | 3,331 |
 
+ChEBI is mapped in a normalized ontology cross-reference table rather than the
+nested source-record field. ChEBI Release 239 contributes exact
+full-InChIKey links for **6,585 T# identities to 6,587 non-obsolete ChEBI
+classes**; two T# identities map to more than one qualifying ChEBI class. The
+mapping is `terpedia_core.terpene_chebi_classification_20260904`. It retains
+all exact ChEBI IDs and a separate connectivity-only candidate mapping, so the
+ontology links are not reduced to a single arbitrary identifier.
+
 This does **not** yet support the stronger statement that every terpene in
 every Terpedia dataset is represented by a T#. The current T# set is defined
 from COCONUT terpenoids plus confirmed TeroKit terpenoids. For the seven sources
@@ -276,7 +289,7 @@ reported, but several sources contain many identities outside the current
 terpene union. Other Terpedia sources are not yet safely matchable at the
 record level: some are reaction, measurement, organism, or literature
 relations; others need PubChem/ChEBI or structure normalization first. These
-include the current Rhea/ChEBI/PubChem RDF layer, LOTUS, Dr. Duke, NAEB,
+include the remaining Rhea/PubChem RDF layer, LOTUS, Dr. Duke, NAEB,
 TCMID, BRENDA, cannabis measurement tables, CannabisDB, KNApSAcK, EssoilDB,
 and SAIR relation tables. They must be added through explicit identifier
 crosswalks, not inferred from names.
@@ -535,35 +548,64 @@ An observed row is not counted as a terpene merely because it came from a table 
 
 | Field | Meaning |
 |---|---|
-| `classification_evidence` | The actual evidence used: source-declared class, direct parent, ChEBI/PubChem link, or provisional structure QC flag. |
+| `classification_evidence` | The actual evidence used: direct reaction evidence, exact identity-to-ontology path, source-declared class, or provisional structure QC flag. |
 | `identity_key` | Standard InChIKey where available; otherwise a validated canonical-structure hash; null when no structure identity is available. |
 | `classification_status` | `confirmed`, `probable`, `ambiguous`, or `excluded`. |
 | `source_release` / `manifest` | The release, retrieval timestamp, immutable snapshot, and content hash needed to reproduce the result. |
 
 The evidence hierarchy is:
 
-1. source-declared terpene/terpenoid class or direct parent;
-2. linked ChEBI/PubChem classification;
-3. an explicit natural-products classifier retained by the source;
+1. direct curated biochemical evidence that a compound is a terpene-synthase
+   product;
+2. exact chemical-identity match to a class on a declared ChEBI
+   terpene/terpenoid ontology path;
+3. source-declared terpene/terpenoid membership or natural-products
+   classifier output; and
 4. molecular formula or structure heuristics as provisional QC only.
 
-This hierarchy is now materialized for every T# identity in
-`terpedia-489015.terpedia_core.terpene_classification_evidence_20260904`.
+This hierarchy is materialized for every T# identity in
+`terpedia-489015.terpedia_core.terpene_classification_evidence_20260904_v2`.
 At the current evidence frontier, **54 identities** occupy tier A because they
 have a stereochemistry-preserving link to a MARTS record curated as an
-experimentally characterized terpene-synthase product. Tier B, reserved for an
-explicit validated ontology path to the declared terpene/terpenoid boundary,
-is intentionally empty pending that computation. The remaining **268,870**
-identities occupy tier C as source-declared candidates.
+experimentally characterized terpene-synthase product. An independent
+ontology computation places **6,551 identities** in tier B through an exact
+full-InChIKey match to a non-obsolete ChEBI Release 239 class in the asserted
+named-subclass closure of `terpene` (`CHEBI:35186`) or `terpenoid`
+(`CHEBI:26873`). Another 34 tier-A identities also have exact ChEBI support;
+therefore the non-overlapping A-or-B validated union is **6,605 identities
+(2.4561%)**, not 6,639. The remaining **262,319 identities (97.5439%)** occupy
+tier C as source-declared candidates.
+
+The ChEBI boundary itself is reported rather than hidden. Release 239 contains
+594 non-obsolete asserted descendants of `terpene` and 11,086 of `terpenoid`,
+including each root; their union is 11,653 classes, of which 11,318 have an
+InChIKey. Exact mapping confirms 273 T# identities under the narrow terpene
+closure and 6,320 under the broad terpenoid closure; eight lie in both. ChEBI
+models `terpenoid` as having parent hydride `terpene`, not as a simple subclass
+of it, so a single closure would omit part of the intended census.
+
+Removing stereochemical layers raises ChEBI overlap to **23,848 T# identities
+(8.8679%)**, including 17,263 without an exact full-key match. This relaxed
+result is sensitivity evidence only: 5,496 relaxed matches have multiple
+qualifying ChEBI IDs, so it does not confer tier B. Absence from ChEBI is also
+missing evidence, not evidence that a candidate is not a terpene.
 
 Source support is recorded independently: 75,664 identities occur in both
 defining sources, 123,570 only in COCONUT, and 69,690 only in TeroKit. Of the
 54 tier-A products, 44 occur in both defining sources and 10 are TeroKit-only.
+Of the 6,585 exact ChEBI matches, 4,440 occur in both defining sources and
+2,145 are COCONUT-only; none are TeroKit-only. This asymmetry may reflect the
+respective source universes, generated stereochemical expansion, or
+classification error and should be tested in the manual audit rather than
+treated as proof that all COCONUT-only records are correct.
 QC status is also orthogonal: 1,235 COCONUT-only structures are disconnected
 and 584 TeroKit-only structures are fluorinated; 267,105 have no current QC
 flag. “No current QC flag” does not mean chemically validated. Counts and
 definitions are preserved in
 [`data/reports/classification-evidence-20260904.json`](data/reports/classification-evidence-20260904.json).
+The ChEBI extraction, mapping, and revised tier counts are preserved in
+[`data/reports/chebi-ontology-extraction-20260904.json`](data/reports/chebi-ontology-extraction-20260904.json)
+and [`data/reports/chebi-classification-20260904.json`](data/reports/chebi-classification-20260904.json).
 
 Heuristics never establish terpene status on their own. COCONUT complete, SAIR, UNII, TCMID, vendor, reaction, assay, and measurement rows are excluded from molecule totals unless the individual record supplies qualifying chemical-class evidence and a chemical identity. Reaction enzymes and relation rows remain relations even when they point to a terpene molecule.
 
@@ -640,10 +682,11 @@ Plant Metabolic Network for literature-linked and pathway-level expansion.
 
 ## 11. Limitations and publication-grade completion criteria
 
-The principal numerical result is presently a **candidate identity census**.
-Its false-positive rate as a terpene/terpenoid census is unknown because no
-stratified per-record chemical-class validation has yet been completed. Its
-false-negative rate is also unknown because several Terpedia sources and
+The principal numerical result remains a **candidate identity census**. An
+exact ChEBI ontology audit and direct MARTS evidence now validate 6,605 members
+within the declared boundary, but the false-positive rate of the full candidate
+set remains unknown because no stratified expert audit has yet been completed.
+Its false-negative rate is also unknown because several Terpedia sources and
 structures lacking resolvable identifiers remain outside the union. The
 standard-InChI result is sensitive to normalization choices, and no current
 single number captures all stereoisomer, tautomer, salt, mixture, and parent
@@ -652,7 +695,8 @@ structure interpretations.
 Before the candidate total is promoted to a validated census, a release must:
 
 1. materialize a per-T# classification-evidence table with explicit ontology
-   ancestry or source-class evidence, retaining ambiguous and excluded rows;
+   ancestry or source-class evidence, retaining ambiguous and excluded rows
+   (**completed for ChEBI 239, MARTS, and current QC flags**);
 2. report identity-count sensitivity under stereochemistry-preserving,
    standard-InChI, connectivity-only, and normalized-parent policies;
 3. perform a preregistered, source- and scaffold-stratified manual audit and

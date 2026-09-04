@@ -175,13 +175,18 @@ SELECT
     AS smiles_fallback_members
 FROM unioned;
 
--- 6. RDF/SPARQL query templates for https://kb.terpedia.com/sparql.
--- Run these through requests.get(..., params={'query': query, 'format': 'json'}).
--- Count terpenoids and descendants:
+-- 6. RDF/SPARQL query templates for the private Fuseki endpoint. Count
+-- asserted descendants as ontology classes, not as instances. The terpene
+-- and terpenoid roots are distinct boundaries and must be reported separately.
 -- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
--- SELECT (COUNT(DISTINCT ?entity) AS ?n) WHERE {
---   ?entity a/rdfs:subClassOf* <http://purl.obolibrary.org/obo/CHEBI_35186> .
+-- SELECT ?boundary (COUNT(DISTINCT ?class) AS ?n) WHERE {
+--   VALUES (?boundary ?root) {
+--     ('terpene' <http://purl.obolibrary.org/obo/CHEBI_35186>)
+--     ('terpenoid' <http://purl.obolibrary.org/obo/CHEBI_26873>)
+--   }
+--   ?class rdfs:subClassOf* ?root .
 -- }
+-- GROUP BY ?boundary
 -- Count labels containing terpene/terpenoid (discovery diagnostic only):
 -- SELECT (COUNT(DISTINCT ?entity) AS ?n) WHERE {
 --   ?entity ?predicate ?label .
@@ -355,9 +360,25 @@ SELECT
   source_support_tier,
   qc_status,
   COUNT(*) AS t_ids
-FROM `terpedia-489015.terpedia_core.terpene_classification_evidence_20260904`
+FROM `terpedia-489015.terpedia_core.terpene_classification_evidence_20260904_v2`
 GROUP BY chemical_evidence_tier, source_support_tier, qc_status
 ORDER BY chemical_evidence_tier, source_support_tier, qc_status;
+
+-- 21. Exact and stereo-insensitive ChEBI Release 239 classification.
+-- Exact full-InChIKey matches confer tier B; connectivity matches are a
+-- sensitivity analysis only. See schemas/terpene_chebi_classification.sql.
+SELECT
+  COUNT(*) AS t_ids,
+  COUNTIF(exact_match) AS exact_combined,
+  COUNTIF(exact_terpene) AS exact_terpene,
+  COUNTIF(exact_terpenoid) AS exact_terpenoid,
+  COUNTIF(exact_terpene AND exact_terpenoid) AS exact_both,
+  COUNTIF(ARRAY_LENGTH(exact_chebi_ids) > 1) AS exact_multiple_chebi_ids,
+  COUNTIF(connectivity_match) AS connectivity_combined,
+  COUNTIF(connectivity_match AND NOT exact_match) AS connectivity_only,
+  COUNTIF(ARRAY_LENGTH(connectivity_chebi_ids) > 1)
+    AS connectivity_multiple_chebi_ids
+FROM `terpedia-489015.terpedia_core.terpene_chebi_classification_20260904`;
 
 SELECT *
 FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3`

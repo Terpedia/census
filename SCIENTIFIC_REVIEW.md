@@ -12,7 +12,7 @@ evidence.
 | COCONUT–TeroKit candidate union | Complete | `data/reports/coconut-terokit-union-20260903.json` |
 | Exact PubChem identity coverage | Complete for current T# snapshot | Every T# requeried uniformly; `data/reports/pubchem-complete-lookup-20260904.json` |
 | Identity-policy sensitivity | Complete for current T# snapshot | RDKit 2026.03.6 analysis in `data/reports/identity-sensitivity-20260904.json` |
-| Per-T# chemical-class evidence | Complete for currently available evidence; ontology tier missing | Every T# is graded in `terpene_classification_evidence_20260904`; explicit ontology ancestry remains unmaterialized |
+| Per-T# chemical-class evidence | Complete for ChEBI 239 + MARTS frontier | Every T# is graded in `terpene_classification_evidence_20260904_v2`; 6,585 exact ChEBI matches and 54 direct MARTS products yield a 6,605-member A-or-B union |
 | Classification error estimate | Missing | Preregister and execute stratified manual audit with confidence intervals |
 | Cross-source completeness | Partial | Seven cross-reference sources mapped; named sources remain outside the union |
 | Reaction/network coverage | Complete for current graph snapshot | `data/reports/marts-network-coverage-20260904.json` |

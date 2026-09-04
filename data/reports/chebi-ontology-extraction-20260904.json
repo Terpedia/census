@@ -1,0 +1,28 @@
+{
+  "source_file": "/tmp/census-chebi-3df51b.owl",
+  "source_uri": "gs://terpedia-knowledge-raw/raw/chebi/objects/3df51b665dfa54499a41482a2456851983f50b709cefb4c5e9aaeb71a95e6814/chebi.owl",
+  "source_size_bytes": 814872764,
+  "source_sha256": "3df51b665dfa54499a41482a2456851983f50b709cefb4c5e9aaeb71a95e6814",
+  "ontology_metadata": {
+    "version_iri": "http://purl.obolibrary.org/obo/chebi/239/chebi.owl",
+    "comments": [
+      "ChEBI subsumes and replaces the Chemical Ontology first",
+      "Author: ChEBI curation team",
+      "developed by Michael Ashburner & Pankaj Jaiswal.",
+      "ChEBI Release version 239",
+      "For any queries contact chebi-help@ebi.ac.uk"
+    ]
+  },
+  "method": "transitive closure over asserted named rdfs:subClassOf edges",
+  "roots": {
+    "terpene": "CHEBI:35186",
+    "terpenoid": "CHEBI:26873"
+  },
+  "all_class_records": 220816,
+  "nonobsolete_output_records": 11653,
+  "terpene_descendants_including_root": 594,
+  "terpenoid_descendants_including_root": 11086,
+  "combined_descendants_including_roots": 11653,
+  "output_with_inchikey": 11318,
+  "output_with_inchi": 11318
+}

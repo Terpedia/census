@@ -85,6 +85,18 @@ Search performed 2026-09-03 for the requested phrase family: `“there are … N
     - https://doi.org/10.1093/nar/gky294
     - https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest
 
+13. **Hastings et al. (2013), “ChEBI in 2013: a database of chemical entities
+    of biological interest.”** ChEBI is a manually curated chemical database
+    and ontology whose entries are classified through `is_a` relations. The
+    census uses the immutable Release 239 OWL snapshot and reports the separate
+    `terpene` (`CHEBI:35186`) and `terpenoid` (`CHEBI:26873`) boundaries. The
+    current ChEBI record defines terpenoids broadly and relates that class to
+    terpene by `has parent hydride`, which is why the two asserted subclass
+    closures are unioned rather than treating one as the other's subclass.
+    - https://doi.org/10.1093/nar/gks1146
+    - https://www.ebi.ac.uk/chebi/CHEBI%3A26873
+    - Release 239 snapshot SHA-256: `3df51b665dfa54499a41482a2456851983f50b709cefb4c5e9aaeb71a95e6814`
+
 ## Search-result leads not yet accepted as evidence
 
 - Popular cannabis education pages repeat 30,000, 55,000, or 200+ figures without consistently defining the counted universe.
