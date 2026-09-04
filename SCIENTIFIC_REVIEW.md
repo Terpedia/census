@@ -12,13 +12,13 @@ evidence.
 | COCONUT–TeroKit candidate union | Complete | `data/reports/coconut-terokit-union-20260903.json` |
 | Exact PubChem identity coverage | Complete for current T# snapshot | Every T# requeried uniformly; `data/reports/pubchem-complete-lookup-20260904.json` |
 | Identity-policy sensitivity | Complete for current T# snapshot | RDKit 2026.03.6 analysis in `data/reports/identity-sensitivity-20260904.json` |
-| Per-T# chemical-class evidence | Partial | Source evidence exists; whole-corpus QC exposed fluorinated and disconnected-structure review strata |
+| Per-T# chemical-class evidence | Complete for currently available evidence; ontology tier missing | Every T# is graded in `terpene_classification_evidence_20260904`; explicit ontology ancestry remains unmaterialized |
 | Classification error estimate | Missing | Preregister and execute stratified manual audit with confidence intervals |
 | Cross-source completeness | Partial | Seven cross-reference sources mapped; named sources remain outside the union |
 | Reaction/network coverage | Complete for current graph snapshot | `data/reports/marts-network-coverage-20260904.json` |
 | MARTS enzyme and catalog-promiscuity census | Complete for ingested snapshot | Same report; source-version reconciliation remains a release-metadata task |
-| Organism association census by evidence level | Missing | Design specified in paper section 10; counts not materialized |
-| Experimental versus predicted provenance census | Missing | Evidence distinctions defined; per-T# aggregation not materialized |
+| Organism association census by evidence level | Partial | 72,930 COCONUT T# identities materialized as source-reported associations; measured, isolated, and biosynthesized tiers remain |
+| Experimental versus predicted provenance census | Partial | 54 strict T# products have directly characterized MARTS reaction support; whole-corpus occurrence/isolation/measurement tiers remain |
 | Purchasability | Partial | TeroKit snapshot counted; independent dated vendor verification absent |
 | PubMed literature census | Partial | 6,500 retrieval records plus a deduplicated 1,850-pair function panel; unique terpene-positive and identity-linked PMID counts absent |
 | PubChem BioAssay census | Complete for participation and active/inactive associations | 29,251 T# identities and 94,733 AIDs; inconclusive versus unspecified requires result-level retrieval |

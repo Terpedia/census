@@ -349,6 +349,16 @@ FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_edges_current_latest_v
 GROUP BY structure_match_mode
 ORDER BY structure_match_mode;
 
+-- 20. Per-T# classification evidence, source support, and orthogonal QC.
+SELECT
+  chemical_evidence_tier,
+  source_support_tier,
+  qc_status,
+  COUNT(*) AS t_ids
+FROM `terpedia-489015.terpedia_core.terpene_classification_evidence_20260904`
+GROUP BY chemical_evidence_tier, source_support_tier, qc_status
+ORDER BY chemical_evidence_tier, source_support_tier, qc_status;
+
 SELECT *
 FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3`
 ORDER BY stratum;
@@ -486,3 +496,55 @@ SELECT
   COUNTIF(pubmed_count = 0) AS zero_hit_pairs,
   SUM(pubmed_count) AS summed_pair_hits_not_unique_pmids
 FROM pairs;
+
+-- 18. COCONUT organism-label and DOI coverage. The materialized association
+-- table retains original labels; this aggregate does not claim biosynthesis.
+WITH c AS (
+  SELECT DISTINCT standard_inchi, organisms, dois
+  FROM `terpedia-489015.terpedia_raw.coconut_terpenoids`
+), organism_pairs AS (
+  SELECT DISTINCT standard_inchi, TRIM(organism) AS organism
+  FROM c, UNNEST(SPLIT(organisms, '|')) AS organism
+  WHERE NULLIF(TRIM(organism), '') IS NOT NULL
+), doi_pairs AS (
+  SELECT DISTINCT standard_inchi, LOWER(TRIM(doi)) AS doi
+  FROM c, UNNEST(SPLIT(dois, '|')) AS doi
+  WHERE NULLIF(TRIM(doi), '') IS NOT NULL
+), by_identity AS (
+  SELECT
+    standard_inchi,
+    LOGICAL_OR(NULLIF(TRIM(organisms), '') IS NOT NULL) AS has_organism,
+    LOGICAL_OR(NULLIF(TRIM(dois), '') IS NOT NULL) AS has_doi
+  FROM c
+  GROUP BY standard_inchi
+)
+SELECT
+  (SELECT COUNT(DISTINCT standard_inchi) FROM organism_pairs)
+    AS identities_with_organisms,
+  (SELECT COUNT(DISTINCT organism) FROM organism_pairs)
+    AS distinct_organism_labels,
+  (SELECT COUNT(*) FROM organism_pairs) AS identity_organism_pairs,
+  (SELECT COUNT(DISTINCT standard_inchi) FROM doi_pairs) AS identities_with_dois,
+  (SELECT COUNT(DISTINCT doi) FROM doi_pairs) AS distinct_dois,
+  (SELECT COUNT(*) FROM doi_pairs) AS identity_doi_pairs,
+  COUNTIF(has_organism AND has_doi) AS identities_with_organism_and_doi,
+  COUNTIF(has_organism AND NOT has_doi) AS identities_with_organism_without_doi,
+  COUNTIF(NOT has_organism AND has_doi) AS identities_with_doi_without_organism
+FROM by_identity;
+
+-- 19. Directly characterized MARTS records linked into the current T# graph.
+-- Keep stereochemistry-preserving and relaxed structure matches separate.
+SELECT
+  structure_match_mode,
+  COUNT(*) AS edge_rows,
+  COUNT(DISTINCT product_terpene_id) AS product_t_ids,
+  COUNT(DISTINCT reaction_id) AS reaction_rules,
+  COUNTIF(
+    NULLIF(TRIM(source_uniprot_id), '') IS NOT NULL
+    OR NULLIF(TRIM(source_genbank_id), '') IS NOT NULL
+  ) AS rows_with_source_protein_id
+FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_edges_current_latest_v3_enzyme_evidence`
+WHERE source_type = 'MARTS-DB'
+  AND evidence_type = 'directly_characterized_MARTS_record'
+GROUP BY structure_match_mode
+ORDER BY structure_match_mode;

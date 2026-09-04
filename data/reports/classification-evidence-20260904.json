@@ -1,0 +1,25 @@
+{
+  "generated_at_utc": "2026-09-04",
+  "bigquery_table": "terpedia-489015.terpedia_core.terpene_classification_evidence_20260904",
+  "total_t_ids": 268924,
+  "chemical_evidence_tiers": {
+    "A_directly_characterized_tps_product": 54,
+    "B_ontology_confirmed": 0,
+    "C_source_declared_candidate": 268870
+  },
+  "source_support_tiers": {
+    "two_defining_sources": 75664,
+    "coconut_only": 123570,
+    "terokit_only": 69690
+  },
+  "direct_marts_by_source_support": {
+    "two_defining_sources": 44,
+    "terokit_only": 10
+  },
+  "quality_control": {
+    "no_current_qc_flag": 267105,
+    "review_disconnected": 1235,
+    "review_fluorinated": 584
+  },
+  "interpretation": "Tier A means a stereochemistry-preserving link to a MARTS record curated as an experimentally characterized terpene-synthase product. Tier B is intentionally empty until explicit ontology ancestry is materialized. Tier C is source-declared candidate evidence. Absence of a current QC flag is not validation, and flags are not automatic exclusions."
+}

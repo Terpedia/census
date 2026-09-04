@@ -1,0 +1,22 @@
+{
+  "computed_at_utc": "2026-09-04",
+  "source_table": "terpedia-489015.terpedia_raw.coconut_terpenoids",
+  "materialized_table": "terpedia-489015.terpedia_core.terpene_organism_associations_20260904",
+  "coconut_candidate_t_ids": 199234,
+  "full_tstar_corpus": 268924,
+  "association_rows": 365294,
+  "identity_organism_pairs": 365256,
+  "t_ids_with_organism_labels": 72930,
+  "distinct_organism_labels": 26032,
+  "t_ids_with_dois": 39054,
+  "t_ids_with_organism_and_doi": 38572,
+  "t_ids_with_organism_without_doi": 34358,
+  "t_ids_with_doi_without_organism": 482,
+  "distinct_dois": 10209,
+  "identity_doi_pairs": 50331,
+  "full_corpus_organism_coverage_percent": 27.1192,
+  "coconut_organism_coverage_percent": 36.6052,
+  "claim_type": "reported_in_organism_source_field",
+  "evidence_status": "source_reported_not_independently_verified",
+  "interpretation": "An organism label is a source-reported association, not proof of isolation, measurement, biosynthesis, or taxonomic normalization. DOI presence improves traceability but does not validate the assertion without article-level review."
+}

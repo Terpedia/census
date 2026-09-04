@@ -206,6 +206,16 @@ does not prove that all linked products are formed under identical conditions
 or in vivo. The executed results and claim boundaries are preserved in
 [`data/reports/marts-network-coverage-20260904.json`](data/reports/marts-network-coverage-20260904.json).
 
+Joining those curated records into the T# graph yields **54 product T#
+identities in 235 strict, stereochemistry-preserving MARTS reaction edges**;
+all 235 retain a source protein identifier. The stereo-insensitive discovery
+layer reaches 744 product T# identities through 469 MARTS reaction IDs and
+21,167 expanded edges. Only the strict 54-product set is counted as direct
+curated enzyme–reaction support at the current identity resolution; the
+relaxed set remains candidate evidence. Even the strict set establishes a
+curated enzyme-product result, not complete-pathway operation or flux in the
+source organism.
+
 ### 7.3 Assigned Terpedia identity set
 
 To make the union addressable for downstream curation, the 268,924-member
@@ -311,6 +321,14 @@ the source declaration, not independent ChEBI/PubChem classification or
 experimental production evidence. PubChem CID resolution likewise confirms a
 chemical identifier match, not terpene classification, natural occurrence,
 or experimental measurement.
+
+The direct MARTS join supplies a stronger but much smaller experimental tier:
+54 T# products have stereochemistry-preserving links to records curated by
+MARTS as experimentally characterized terpene-synthase reactions. This does
+not transfer experimental status to every T# identity in the same scaffold or
+reaction neighborhood. The other T# identities remain source-declared
+candidates unless separate occurrence, isolation, measurement, or enzyme
+evidence is attached.
 
 TeroKit currently marks **16,238 source molecule records** as purchasable.
 After identity resolution, these correspond to **13,095 distinct T#
@@ -529,6 +547,24 @@ The evidence hierarchy is:
 3. an explicit natural-products classifier retained by the source;
 4. molecular formula or structure heuristics as provisional QC only.
 
+This hierarchy is now materialized for every T# identity in
+`terpedia-489015.terpedia_core.terpene_classification_evidence_20260904`.
+At the current evidence frontier, **54 identities** occupy tier A because they
+have a stereochemistry-preserving link to a MARTS record curated as an
+experimentally characterized terpene-synthase product. Tier B, reserved for an
+explicit validated ontology path to the declared terpene/terpenoid boundary,
+is intentionally empty pending that computation. The remaining **268,870**
+identities occupy tier C as source-declared candidates.
+
+Source support is recorded independently: 75,664 identities occur in both
+defining sources, 123,570 only in COCONUT, and 69,690 only in TeroKit. Of the
+54 tier-A products, 44 occur in both defining sources and 10 are TeroKit-only.
+QC status is also orthogonal: 1,235 COCONUT-only structures are disconnected
+and 584 TeroKit-only structures are fluorinated; 267,105 have no current QC
+flag. “No current QC flag” does not mean chemically validated. Counts and
+definitions are preserved in
+[`data/reports/classification-evidence-20260904.json`](data/reports/classification-evidence-20260904.json).
+
 Heuristics never establish terpene status on their own. COCONUT complete, SAIR, UNII, TCMID, vendor, reaction, assay, and measurement rows are excluded from molecule totals unless the individual record supplies qualifying chemical-class evidence and a chemical identity. Reaction enzymes and relation rows remain relations even when they point to a terpene molecule.
 
 The headline result should therefore be a classification table, not one inflated number: confirmed identities, probable candidates, ambiguous records, excluded relation/measurement rows, and the deduplicated union of confirmed identities across sources.
@@ -540,6 +576,28 @@ question—**which organism or biological sample has been associated with a
 compound?** It cannot automatically answer the stronger question—**which
 organism biosynthesizes the compound?** A structure record alone contains no
 organism evidence.
+
+In the current COCONUT terpenoid snapshot, **72,930 T# identities** have at
+least one non-empty organism label. This is 36.6052% of the 199,234 COCONUT
+candidate identities and 27.1192% of the full 268,924-member T# candidate
+corpus. Splitting the source field yields 26,032 distinct, unnormalized labels
+and 365,256 distinct identity–label pairs. The materialized evidence table has
+365,294 source-record-level rows because some identity–organism pairs occur in
+more than one source record.
+
+Literature traceability is incomplete: 39,054 COCONUT identities have at least
+one DOI; 38,572 have both an organism label and DOI, while 34,358 have an
+organism label but no DOI. The 10,209 distinct DOI strings form 50,331
+identity–DOI pairs. DOI presence supports traceability but is not article-level
+confirmation that the organism was measured, that the compound was isolated,
+or that the organism biosynthesizes it.
+
+The row-level table
+`terpedia-489015.terpedia_core.terpene_organism_associations_20260904`
+therefore labels every assertion as `reported_in_organism_source_field` and
+`source_reported_not_independently_verified`; it preserves the original label,
+record, collections, DOI field, release, manifest, and source file. Its audit
+is [`data/reports/coconut-organism-associations-20260904.json`](data/reports/coconut-organism-associations-20260904.json).
 
 | Source | Organism or biological context available | Evidence level for production | Counting use |
 |---|---|---|---|
@@ -569,15 +627,12 @@ the named organism. Taxonomic names should be normalized through a versioned
 backbone such as World Flora Online, Catalogue of Life, or NCBI Taxonomy while
 retaining the original name exactly as reported.
 
-The immediate census deliverable should therefore be a separate
-organism-association table keyed by `identity_key` and containing:
-`original_organism_name`, `normalized_taxon_id`, `organism_rank`, `plant_part`
-or sample context, `claim_type`, `measurement_value` and units when present,
-`source_record_id`, citation, release/manifest, and an evidence status. It
-should report the number of distinct compounds with any organism association,
-the number with quantified sample evidence, and the number with stronger
-isolation or biosynthesis evidence. Those counts must not be merged into the
-chemical-identity total.
+The materialized COCONUT table implements the source-reported tier of this
+model. Expansion should add `normalized_taxon_id`, `organism_rank`, `plant_part`
+or sample context, `measurement_value` and units when present, and distinct
+statuses for quantified, isolated, and biosynthesized evidence. Future reports
+must count those stronger tiers separately and must not merge any organism
+association count into the chemical-identity total.
 
 The strongest near-term sources are COCONUT and Dr. Duke for reported plant
 occurrence, the cannabis measurement view for sample composition, and LOTUS or

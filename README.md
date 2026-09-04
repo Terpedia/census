@@ -48,6 +48,10 @@ recorded in
 [`data/reports/identity-sensitivity-20260904.json`](data/reports/identity-sensitivity-20260904.json).
 The current PubMed function-by-terpene query-panel audit is in
 [`data/reports/pubmed-function-cooccurrence-20260904.json`](data/reports/pubmed-function-cooccurrence-20260904.json).
+COCONUT organism-label coverage and its evidence boundary are in
+[`data/reports/coconut-organism-associations-20260904.json`](data/reports/coconut-organism-associations-20260904.json).
+The per-T# evidence tiers, source support, and QC statuses are in
+[`data/reports/classification-evidence-20260904.json`](data/reports/classification-evidence-20260904.json).
 
 ## Research question
 

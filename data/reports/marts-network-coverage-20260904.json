@@ -29,6 +29,22 @@
     "precursor_t_ids": 4917,
     "reaction_rules": 2821
   },
+  "direct_marts_tstar_links": {
+    "isomeric": {
+      "edge_rows": 235,
+      "product_t_ids": 54,
+      "reaction_rules": 235,
+      "rows_with_source_protein_id": 235
+    },
+    "stereo_insensitive": {
+      "edge_rows": 21167,
+      "product_t_ids": 744,
+      "reaction_rules": 469,
+      "rows_with_source_protein_id": 21131
+    },
+    "evidence_type": "directly_characterized_MARTS_record",
+    "interpretation": "The strict product count is direct curated enzyme-reaction support joined by stereochemistry-preserving structure. The relaxed count is a candidate mapping that discards stereochemistry. Neither establishes pathway operation or flux in a target organism."
+  },
   "coverage_dashboard": "terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3",
   "full_tstar_corpus": {
     "corpus_nodes": 268924,
