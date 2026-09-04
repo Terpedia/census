@@ -75,6 +75,32 @@ For example: “59,833 records classified as terpenes in dataset X, version Y, d
 - Reproduce the 59,833-record dataset count if the underlying COCONUT release is available.
 - Add a figure showing estimates as labeled claims, with scope encoded separately from year.
 
+## 7. Terpedia data census: BigQuery and RDF
+
+The operational question is different from the historical question: **how many terpene/terpenoid identities does Terpedia currently hold, and how much overlap exists among its sources?** The answer must be computed from source snapshots, not inferred by adding table row counts.
+
+The first confirmed BigQuery inventory gives these raw row counts:
+
+| BigQuery source | Raw rows | Counting role |
+|---|---:|---|
+| `coconut_complete` | 695,133 | Broad COCONUT source table |
+| `coconut_terpenoids` | 199,405 | Terpenoid subset; do not add to `coconut_complete` |
+| `coconut_terpenoids_pubchem` | 177,449 | Derived/linked subset; do not add to COCONUT totals |
+| `terokit_molecules` | 337,904 | Molecule table |
+| `terokit_purchasable_molecules` | 165,736 | Vendor relation/catalog; not an independent molecule universe |
+| `terokit_reaction_molecules` | 9,584 | Reaction relation; not an independent molecule universe |
+| `terokit_reaction_enzymes` | 27,974 | Enzyme relation; not a molecule count |
+
+These are row counts, not the Terpedia total. The current defensible total is therefore **not yet a single integer** until BigQuery and RDF are joined on chemical identity. The primary deduplication key is `standard_inchi_key`/InChIKey; if absent, use a validated canonical-structure hash. Names and labels are discovery fields only and cannot establish identity.
+
+The final report should publish at least three totals:
+
+1. source-row counts;
+2. unique chemical identities in each source; and
+3. the union of unique identities across the selected molecule sources, with pairwise and multiway overlap.
+
+The Colab notebook is read-only with respect to BigQuery. It should run the queries in [`queries.sql`](queries.sql), save result tables and the exact query timestamp, and never print or store the API key.
+
 ## References
 
 See [`sources.md`](sources.md) for links and provenance notes.

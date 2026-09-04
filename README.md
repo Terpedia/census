@@ -8,6 +8,7 @@ The first web search suggests that there is no single stable answer. Published a
 
 - [`paper.md`](paper.md) — working paper draft
 - [`sources.md`](sources.md) — source ledger and search notes
+- [`queries.sql`](queries.sql) — BigQuery inventory, count, and overlap queries
 
 ## Research question
 
@@ -22,4 +23,4 @@ The project will separate at least four quantities:
 
 ## Status
 
-Initial repository and literature-search scaffold created 2026-09-03. The estimates in the draft are leads for verification, not a final census.
+Initial repository and literature-search scaffold created 2026-09-03. The estimates in the draft are leads for verification, not a final census. The current data-census work is scoped to Terpedia BigQuery and RDF, following the upload-first Colab pattern in `chat/strain`.

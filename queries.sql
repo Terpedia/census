@@ -1,0 +1,62 @@
+-- Terpedia “how many” census queries.
+-- Run from Google Colab with an authenticated BigQuery client.
+-- Project: terpedia-489015. These queries are read-only.
+
+-- 1. Discover tables and schemas.
+SELECT table_schema, table_name, table_type
+FROM `terpedia-489015`.region-us.INFORMATION_SCHEMA.TABLES
+ORDER BY table_schema, table_name;
+
+-- 2. Inspect columns before writing identity joins.
+SELECT table_schema, table_name, column_name, data_type
+FROM `terpedia-489015`.region-us.INFORMATION_SCHEMA.COLUMNS
+WHERE table_schema = 'terpedia_raw'
+  AND (
+    REGEXP_CONTAINS(LOWER(column_name), r'(inchi|smiles|structure|compound|molecule|terpen)')
+    OR column_name IN ('source_id', 'source_release', 'record_id')
+  )
+ORDER BY table_name, ordinal_position;
+
+-- 3. Raw row counts. Confirm exact table names from step 1.
+SELECT 'coconut_complete' AS source, COUNT(*) AS raw_rows
+FROM `terpedia-489015.terpedia_raw.coconut_complete`
+UNION ALL SELECT 'coconut_terpenoids', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.coconut_terpenoids`
+UNION ALL SELECT 'coconut_terpenoids_pubchem', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.coconut_terpenoids_pubchem`
+UNION ALL SELECT 'terokit_molecules', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.terokit_molecules`
+UNION ALL SELECT 'terokit_purchasable_molecules', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.terokit_purchasable_molecules`
+UNION ALL SELECT 'terokit_reaction_molecules', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.terokit_reaction_molecules`
+UNION ALL SELECT 'terokit_reaction_enzymes', COUNT(*)
+FROM `terpedia-489015.terpedia_raw.terokit_reaction_enzymes`;
+
+-- 4. Template for deduplicated source counts.
+-- Replace `identity_key` with the actual column selected after step 2.
+-- Prefer standard_inchi_key, then canonical structure hash; exclude nulls.
+-- SELECT COUNT(*) AS unique_identities,
+--        COUNTIF(standard_inchi_key IS NULL) AS missing_primary_key
+-- FROM (
+--   SELECT DISTINCT NULLIF(TRIM(standard_inchi_key), '') AS standard_inchi_key
+--   FROM `terpedia-489015.terpedia_raw.coconut_terpenoids`
+-- ) WHERE standard_inchi_key IS NOT NULL;
+
+-- 5. Pairwise overlap template after normalizing each source to identity_key.
+-- WITH a AS (... SELECT DISTINCT identity_key FROM ...),
+--      b AS (... SELECT DISTINCT identity_key FROM ...)
+-- SELECT COUNT(*) AS overlap FROM a JOIN b USING (identity_key);
+
+-- 6. RDF/SPARQL query templates for https://kb.terpedia.com/sparql.
+-- Run these through requests.get(..., params={'query': query, 'format': 'json'}).
+-- Count terpenoids and descendants:
+-- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+-- SELECT (COUNT(DISTINCT ?entity) AS ?n) WHERE {
+--   ?entity a/rdfs:subClassOf* <http://purl.obolibrary.org/obo/CHEBI_35186> .
+-- }
+-- Count labels containing terpene/terpenoid (discovery diagnostic only):
+-- SELECT (COUNT(DISTINCT ?entity) AS ?n) WHERE {
+--   ?entity ?predicate ?label .
+--   FILTER(isLiteral(?label) && CONTAINS(LCASE(STR(?label)), 'terpen'))
+-- }
