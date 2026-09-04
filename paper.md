@@ -11,7 +11,7 @@ in nature; a 2020 thesis distinguished about 8,000 terpenes from 30,000
 terpenoids; and a 2023 study assembled 59,833 database records. These claims
 count different chemical universes. In a dated Terpedia snapshot, exact
 standard-InChI unioning of COCONUT and source-classified TeroKit records yields
-268,924 candidate terpene/terpenoid identities, of which 226,021 have a
+268,924 candidate terpene/terpenoid identities, of which 225,905 have an exact
 PubChem CID match. This is a candidate-identity census, not a count of
 independently verified natural terpenes: source classification, chemical
 identity, natural occurrence, experimental measurement, and biosynthetic
@@ -352,15 +352,44 @@ products fall outside the Rule of Five while remaining biologically relevant.
 
 ### 7.8 PubChem BioAssay coverage
 
-Terpedia currently has a complete raw mirror of the PubChem BioAssay XML
-inventory, but the RDF promotion and queryable BigQuery projection remain
-partial. Consequently, a final count of T# identities with BioAssay data—and a
-final count of distinct BioAssays testing at least one T# identity—cannot yet be
-reported from the warehouse. PubChem PUG REST supports exact CID-to-AID
-retrieval and can provide an interim census once the complete T#–CID mapping is
-materialized. The final BioAssay report must distinguish assay participation
-from an active result and should separately count tested, active, inactive,
-inconclusive, and unspecified outcomes.
+The full-corpus exact-InChIKey lookup produced 225,905 T# identities mapping to
+226,050 distinct PubChem CIDs. A grouped PubChem PUG REST CID-to-AID query then
+found **29,251 T# identities with at least one BioAssay association**. This is
+10.8771% of all 268,924 T# identities and 12.9484% of T# identities with an
+exact PubChem match. **94,733 distinct PubChem BioAssays** test at least one
+mapped T# identity. At the CID level, 29,254 CIDs have assay data, forming
+800,959 distinct CID–AID links.
+
+Using PubChem's CID-level `aids_type` filters, 8,199 T# identities have at
+least one active association and 5,171 have at least one inactive association.
+Because an identity can have both, the mutually exclusive partition is:
+
+| T# BioAssay status | T# identities |
+|---|---:|
+| Active association(s), no inactive association | 5,818 |
+| Inactive association(s), no active association | 2,790 |
+| Both active and inactive associations | 2,381 |
+| Assay participation without active/inactive AID classification | 18,262 |
+| No assay association | 239,673 |
+
+Across assays, 22,955 AIDs are active for at least one mapped CID, 3,514 are
+inactive for at least one, and 1,937 occur in both sets. Their union is 24,532
+AIDs; the other 70,201 participating AIDs are not classified as active or
+inactive for these CIDs by this endpoint. Participation still does not imply a
+unique biological target or that PubChem classifies the identity as a terpene.
+Separating inconclusive from unspecified outcomes requires result-level assay
+summaries and must not be inferred from identifier associations.
+
+The queries are reproducible with
+[`scripts/search_pubchem_bioassays.py`](scripts/search_pubchem_bioassays.py);
+the aggregate and outcome results are
+[`data/reports/pubchem-bioassay-20260904.json`](data/reports/pubchem-bioassay-20260904.json),
+[`data/reports/pubchem-bioassay-outcomes-20260904.json`](data/reports/pubchem-bioassay-outcomes-20260904.json),
+and the grouped CID–AID data are materialized as
+`terpene_pubchem_bioassay_lookup_20260904`,
+`terpene_pubchem_bioassay_active_lookup_20260904`, and
+`terpene_pubchem_bioassay_inactive_lookup_20260904` in
+`terpedia-489015.terpedia_core`.
 
 ### 7.9 Classification and structure-quality audit
 
@@ -427,14 +456,23 @@ and those counts are unique PubChem records annotated by the selected
 classification. A name search for *terpene* is not equivalent to a structural
 class count.
 
-The initial Terpedia inventory contained **177,449 COCONUT records that have a
-PubChem ID**, representing **177,313 unique T# identities**. The remaining
-91,611 T# identities were queried through PubChem PUG REST by exact InChIKey on
-2026-09-04. **48,708** produced at least one CID and **42,903** returned no
-exact match; 12 matched identities returned more than one CID. The combined
-known coverage is therefore **226,021 of 268,924 T# identities (84.05%)**.
-The complete audited lookup is
-`terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904`.
+The initial Terpedia inventory contained 177,449 rows in a COCONUT-derived
+“has PubChem ID” subset, representing 177,313 T# identities. An earlier audit
+combined that imported source flag with exact lookup of only the remaining
+identities and estimated 226,021 matches. Because the two components had
+different mapping provenance, every T# identity was subsequently requeried by
+exact InChIKey on 2026-09-04. The uniform audit found **225,905 of 268,924 T#
+identities (84.0033%)** with at least one exact CID and 43,019 without one;
+121 T# identities returned more than one CID, for 226,050 distinct CIDs. The
+116-identity difference from the mixed estimate demonstrates why source flags
+and exact current lookups should not be added without revalidation.
+
+The authoritative full-corpus table for this snapshot is
+`terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`, with its
+aggregate audit in
+[`data/reports/pubchem-complete-lookup-20260904.json`](data/reports/pubchem-complete-lookup-20260904.json).
+The earlier missing-only table is retained as provenance, not as the current
+coverage denominator.
 
 An exact CID match confirms only that PubChem contains the same standardized
 structure. It does not mean PubChem classifies the compound as a terpene, nor
@@ -452,6 +490,18 @@ separately, with overlap documented where the classification systems differ.
 Terpedia has a separate literature quantity: compounds named in PubMed-indexed records. This is not the same as the number of chemical identities in BigQuery or RDF. A paper can mention a terpene class without naming a molecule, and one molecule can appear under many spelling, stereochemical, and synonym forms.
 
 The existing Terpedia literature snapshot is `terport/ttl/pubmed_terpenes.ttl`, generated by [`terport/src/update_from_pubmed.py`](../terport/src/update_from_pubmed.py). In the current local snapshot, it contains **6,500 distinct PMID identifiers / journal-article records**. This is a retrieval-snapshot count, not yet a validated count of terpene-positive articles. The companion `terpmed/public/results.json` contains a targeted PubMed query panel with **25 queried compound labels** and per-label hit counts; those labels are a search panel, not a census of all terpene names in PubMed.
+
+A newer function-by-terpene panel in
+`terpedia-489015.terpedia_raw.pubmed_function_terpene_cooccurrence` contains
+1,925 rows spanning 74 distinct function labels and 25 terpene labels. The
+source grid repeats `Fibromyalgia`, `Osteoporosis`, and `neuroprotective` once
+each across all 25 terpenes, creating 75 duplicate rows. After exact pair
+deduplication, **1,850 function–terpene queries** remain; 657 have nonzero
+PubMed hit counts and 1,193 have zero. The sum of the deduplicated pair counts
+is 10,077, but this is query-pair volume, **not 10,077 unique articles**, because
+one PMID can satisfy multiple queries. The labels are not yet resolved to T#
+identities. The audit is preserved in
+[`data/reports/pubmed-function-cooccurrence-20260904.json`](data/reports/pubmed-function-cooccurrence-20260904.json).
 
 The paper should report literature coverage at three levels:
 

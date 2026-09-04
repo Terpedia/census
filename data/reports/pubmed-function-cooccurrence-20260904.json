@@ -1,0 +1,19 @@
+{
+  "retrieved_at_utc": "2026-09-04T10:44:36Z",
+  "source_release": "sheet-2026-06-26-v1",
+  "bigquery_table": "terpedia-489015.terpedia_raw.pubmed_function_terpene_cooccurrence",
+  "raw_rows": 1925,
+  "distinct_function_labels": 74,
+  "distinct_terpene_labels": 25,
+  "distinct_function_terpene_pairs": 1850,
+  "duplicate_rows": 75,
+  "duplicated_function_labels": [
+    "Fibromyalgia",
+    "Osteoporosis",
+    "neuroprotective"
+  ],
+  "pairs_with_nonzero_hits": 657,
+  "pairs_with_zero_hits": 1193,
+  "sum_of_deduplicated_pair_hit_counts": 10077,
+  "interpretation": "The sum is query-pair volume, not a unique-PMID count; one article can satisfy multiple function-terpene queries. Labels are not chemical-identity resolved and zero is a query result, not proof of no literature."
+}

@@ -75,6 +75,16 @@ Search performed 2026-09-03 for the requested phrase family: `“there are … N
     - https://doi.org/10.1093/nar/gkae1063
     - https://academic.oup.com/nar/article/53/D1/D634/7908792
 
+12. **Kim et al. (2018), “An update on PUG-REST: RESTful interface for
+    programmatic access to PubChem.”** PubChem's official specification defines
+    grouped CID-to-AID retrieval and the `all`, `active`, and `inactive` assay
+    filters. The service requests no more than five requests per second and
+    recommends bulk-access consultation for large jobs. The Terpedia scripts
+    use exact InChIKey-to-CID and grouped CID-to-AID operations below that rate
+    limit and retain unmatched records.
+    - https://doi.org/10.1093/nar/gky294
+    - https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest
+
 ## Search-result leads not yet accepted as evidence
 
 - Popular cannabis education pages repeat 30,000, 55,000, or 200+ figures without consistently defining the counted universe.

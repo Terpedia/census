@@ -1,0 +1,15 @@
+{
+  "retrieved_at_utc": "2026-09-04T12:30:23.222460+00:00",
+  "method": "PubChem PUG REST exact InChIKey lookup over every T# row",
+  "total_t_ids": 268924,
+  "distinct_inchikeys_queried": 268924,
+  "matched_t_ids": 225905,
+  "unmatched_t_ids": 43019,
+  "coverage_percent": 84.0033,
+  "unmatched_percent": 15.9967,
+  "multi_cid_t_ids": 121,
+  "distinct_pubchem_cids": 226050,
+  "bigquery_table": "terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904",
+  "supersedes_for_total_coverage": "The earlier 226,021 estimate mixed imported source flags with a missing-only exact lookup. This uniform full-corpus lookup is the authoritative exact-match count for the dated snapshot.",
+  "classification_caveat": "An exact PubChem CID match confirms chemical identity presence, not PubChem terpene classification, natural occurrence, or experimental evidence."
+}

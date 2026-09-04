@@ -374,3 +374,115 @@ FROM `terpedia-489015.terpedia_core.terpene_identity_set`,
 WHERE REGEXP_CONTAINS(molecular_formula, r'F([^a-z]|$)')
 GROUP BY source
 ORDER BY fluorinated_t_ids DESC;
+
+-- 15. Uniform exact PubChem coverage and BioAssay participation.
+WITH t_cids AS (
+  SELECT terpene_id, cid
+  FROM `terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`,
+    UNNEST(SPLIT(pubchem_cids, ';')) AS cid
+  WHERE cid != ''
+), aids AS (
+  SELECT pubchem_cid, aid
+  FROM `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_lookup_20260904`,
+    UNNEST(SPLIT(pubchem_aids, ';')) AS aid
+  WHERE aid != ''
+)
+SELECT
+  (SELECT COUNT(*)
+   FROM `terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`)
+    AS total_t_ids,
+  (SELECT COUNTIF(pubchem_match_status = 'matched')
+   FROM `terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`)
+    AS t_ids_with_pubchem_cid,
+  (SELECT COUNTIF(bioassay_count > 0)
+   FROM `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_lookup_20260904`)
+    AS cids_with_bioassays,
+  COUNT(DISTINCT t.terpene_id) AS t_ids_with_bioassays,
+  COUNT(DISTINCT a.aid) AS distinct_bioassays,
+  COUNT(*) AS cid_aid_t_links
+FROM aids AS a
+JOIN t_cids AS t ON t.cid = a.pubchem_cid;
+
+-- 16. Mutually exclusive T# partition by PubChem active/inactive AID links.
+WITH t_cids AS (
+  SELECT terpene_id, cid
+  FROM `terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`,
+    UNNEST(SPLIT(pubchem_cids, ';')) AS cid
+  WHERE cid != ''
+), all_t AS (
+  SELECT DISTINCT terpene_id
+  FROM t_cids JOIN `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_lookup_20260904` b
+    ON cid = b.pubchem_cid
+  WHERE b.bioassay_count > 0
+), active_t AS (
+  SELECT DISTINCT terpene_id
+  FROM t_cids JOIN `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_active_lookup_20260904` b
+    ON cid = b.pubchem_cid
+  WHERE b.bioassay_count > 0
+), inactive_t AS (
+  SELECT DISTINCT terpene_id
+  FROM t_cids JOIN `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_inactive_lookup_20260904` b
+    ON cid = b.pubchem_cid
+  WHERE b.bioassay_count > 0
+)
+SELECT
+  CASE
+    WHEN a.terpene_id IS NOT NULL AND i.terpene_id IS NOT NULL
+      THEN 'active_and_inactive'
+    WHEN a.terpene_id IS NOT NULL THEN 'active_only'
+    WHEN i.terpene_id IS NOT NULL THEN 'inactive_only'
+    WHEN x.terpene_id IS NOT NULL THEN 'assay_without_active_or_inactive_aid'
+    ELSE 'no_assay'
+  END AS category,
+  COUNT(*) AS t_ids
+FROM `terpedia-489015.terpedia_core.terpene_identity_set` AS t
+LEFT JOIN all_t AS x USING (terpene_id)
+LEFT JOIN active_t AS a USING (terpene_id)
+LEFT JOIN inactive_t AS i USING (terpene_id)
+GROUP BY category
+ORDER BY t_ids DESC;
+
+-- 16b. AID-level overlap of active and inactive associations. The same assay
+-- may classify different mapped compounds, or different submitted records of
+-- a compound, differently.
+WITH active AS (
+  SELECT DISTINCT aid
+  FROM `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_active_lookup_20260904`,
+    UNNEST(SPLIT(pubchem_aids, ';')) AS aid
+  WHERE aid != ''
+), inactive AS (
+  SELECT DISTINCT aid
+  FROM `terpedia-489015.terpedia_core.terpene_pubchem_bioassay_inactive_lookup_20260904`,
+    UNNEST(SPLIT(pubchem_aids, ';')) AS aid
+  WHERE aid != ''
+)
+SELECT
+  (SELECT COUNT(*) FROM active) AS active_aids,
+  (SELECT COUNT(*) FROM inactive) AS inactive_aids,
+  (SELECT COUNT(*) FROM active JOIN inactive USING (aid))
+    AS aids_with_both_outcome_classes,
+  (SELECT COUNT(*) FROM (
+    SELECT aid FROM active UNION DISTINCT SELECT aid FROM inactive
+  )) AS aids_with_active_or_inactive;
+
+-- 17. PubMed function-by-terpene panel audit. Pair hit counts cannot be summed
+-- into unique articles because one PMID may satisfy multiple queries.
+WITH pairs AS (
+  SELECT
+    function_label,
+    terpene_label,
+    MAX(pubmed_count) AS pubmed_count
+  FROM `terpedia-489015.terpedia_raw.pubmed_function_terpene_cooccurrence`
+  GROUP BY function_label, terpene_label
+)
+SELECT
+  (SELECT COUNT(*)
+   FROM `terpedia-489015.terpedia_raw.pubmed_function_terpene_cooccurrence`)
+    AS raw_rows,
+  COUNT(*) AS distinct_pairs,
+  COUNT(DISTINCT function_label) AS distinct_function_labels,
+  COUNT(DISTINCT terpene_label) AS distinct_terpene_labels,
+  COUNTIF(pubmed_count > 0) AS positive_pairs,
+  COUNTIF(pubmed_count = 0) AS zero_hit_pairs,
+  SUM(pubmed_count) AS summed_pair_hits_not_unique_pmids
+FROM pairs;

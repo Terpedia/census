@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Resolve T# structures to PubChem CIDs by exact InChIKey lookup.
 
-Input is the BigQuery-exported missing-ID CSV. Requests are batched and kept
+Input is a BigQuery-exported T# CSV. It may supply ``inchikey``/``inchi`` or an
+``identity_set_key`` beginning with ``inchi:``. Requests are batched and kept
 below PubChem's documented five-requests-per-second limit. The output retains
 unmatched records so coverage can be audited exactly.
 """
@@ -71,8 +72,15 @@ def main():
     for row in rows:
         key = (row.get("inchikey") or "").strip()
         if not key:
-            mol = Chem.MolFromInchi(row["inchi"])
-            key = inchi.MolToInchiKey(mol) if mol else ""
+            source_inchi = (row.get("inchi") or "").strip()
+            if not source_inchi and row.get("identity_set_key", "").startswith("inchi:"):
+                source_inchi = row["identity_set_key"][len("inchi:"):]
+            # A valid standard InChI can be converted directly; reparsing and
+            # regenerating every molecule is slower and can change edge cases.
+            key = inchi.InchiToInchiKey(source_inchi) if source_inchi else ""
+            if not key and row.get("smiles"):
+                mol = Chem.MolFromSmiles(row["smiles"])
+                key = inchi.MolToInchiKey(mol) if mol else ""
         row["resolved_inchikey"] = key
 
     unique_keys = sorted({row["resolved_inchikey"] for row in rows if row["resolved_inchikey"]})

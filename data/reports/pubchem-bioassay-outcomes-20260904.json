@@ -1,0 +1,21 @@
+{
+  "computed_at_utc": "2026-09-04",
+  "total_t_ids": 268924,
+  "t_ids_with_any_assay": 29251,
+  "t_id_outcome_partition": {
+    "active_only": 5818,
+    "inactive_only": 2790,
+    "active_and_inactive": 2381,
+    "assay_without_active_or_inactive_aid": 18262,
+    "no_assay": 239673
+  },
+  "distinct_aids": {
+    "any": 94733,
+    "active_for_at_least_one_mapped_cid": 22955,
+    "inactive_for_at_least_one_mapped_cid": 3514,
+    "both_for_different_or_repeated_mapped_cid_results": 1937,
+    "active_or_inactive_union": 24532,
+    "without_active_or_inactive_classification_for_mapped_cids": 70201
+  },
+  "interpretation": "PUG REST aids_type is evaluated for each mapped CID. A T# or AID can occur in both active and inactive sets. The identifier endpoint does not separate inconclusive from unspecified outcomes; result-level assay summaries are required for that distinction."
+}

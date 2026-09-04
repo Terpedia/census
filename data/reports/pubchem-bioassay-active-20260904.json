@@ -1,0 +1,16 @@
+{
+  "retrieved_at_utc": "2026-09-04T12:49:50.666049+00:00",
+  "method": "PubChem PUG REST grouped CID-to-AID lookup",
+  "aids_type": "active",
+  "mapping_input": "terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904",
+  "total_t_ids": 268924,
+  "t_ids_with_pubchem_cid": 225905,
+  "distinct_cids_queried": 226050,
+  "cids_with_bioassays": 8199,
+  "t_ids_with_bioassays": 8199,
+  "distinct_bioassays_testing_t_ids": 22955,
+  "cid_aid_links": 66479,
+  "cid_aid_table": "terpedia-489015.terpedia_core.terpene_pubchem_bioassay_active_lookup_20260904",
+  "t_id_coverage_percent": 3.0488,
+  "scope_boundary": "Active means PubChem returns the AID for the mapped CID under aids_type=active. It is a database outcome association, not proof of efficacy, safety, a unique target, or terpene classification."
+}

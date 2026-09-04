@@ -26,6 +26,15 @@ deterministic tie-breaking.
 The exact-InChIKey PubChem recovery audit is in
 `terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904` and can be
 reproduced with [`scripts/search_pubchem_ids.py`](scripts/search_pubchem_ids.py).
+The authoritative full-corpus exact lookup is
+`terpedia-489015.terpedia_core.terpene_pubchem_lookup_all_20260904`, summarized
+in [`data/reports/pubchem-complete-lookup-20260904.json`](data/reports/pubchem-complete-lookup-20260904.json).
+Its CID-to-BioAssay projection is
+`terpedia-489015.terpedia_core.terpene_pubchem_bioassay_lookup_20260904`, with
+methods and aggregate counts in
+[`data/reports/pubchem-bioassay-20260904.json`](data/reports/pubchem-bioassay-20260904.json).
+The active/inactive overlap is recorded in
+[`data/reports/pubchem-bioassay-outcomes-20260904.json`](data/reports/pubchem-bioassay-outcomes-20260904.json).
 The aggregate RDKit Rule-of-Five census is recorded in
 [`data/reports/lipinski-20260904.json`](data/reports/lipinski-20260904.json).
 The MARTS-DB enzyme/promiscuity census and current T# metabolic-network
@@ -37,6 +46,8 @@ Identity-policy sensitivity is computed by
 [`scripts/identity_sensitivity.py`](scripts/identity_sensitivity.py) and
 recorded in
 [`data/reports/identity-sensitivity-20260904.json`](data/reports/identity-sensitivity-20260904.json).
+The current PubMed function-by-terpene query-panel audit is in
+[`data/reports/pubmed-function-cooccurrence-20260904.json`](data/reports/pubmed-function-cooccurrence-20260904.json).
 
 ## Research question
 
