@@ -220,6 +220,17 @@ Thus the defensible current claim is: **all 268,924 T# identities have at
 least one exact-key provenance link, but complete all-dataset coverage has not
 yet been demonstrated.**
 
+### 7.5 Structure-based ordering
+
+The T# table is accompanied by the versioned table
+`terpedia-489015.terpedia_core.terpene_similarity_order_20260904`. All
+268,924 structures parsed successfully with RDKit. The ordering groups exact
+Bemis–Murcko scaffolds, producing 93,206 scaffold groups, and uses a 2,048-bit
+Morgan fingerprint hash as a deterministic tie-breaker. This is a scaffold
+family ordering, not a claim that adjacent rows have a quantified Tanimoto
+similarity. T# remains the identity handle; `similarity_rank` is a replaceable,
+versioned presentation order.
+
 The final report should publish at least three totals:
 
 1. source-row counts;

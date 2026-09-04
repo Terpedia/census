@@ -261,3 +261,17 @@ SELECT
 FROM `terpedia-489015.terpedia_core.terpene_identity_set`
 GROUP BY terpene_size_class, carbon_count
 ORDER BY carbon_count;
+
+-- 9. Structure-based ordering. Join this versioned table to obtain the
+-- scaffold-family display order without changing the chemical identity key.
+SELECT
+  t.terpene_id,
+  s.similarity_rank,
+  s.scaffold_smiles,
+  s.scaffold_hash,
+  s.fingerprint_hash,
+  s.similarity_method
+FROM `terpedia-489015.terpedia_core.terpene_identity_set` AS t
+JOIN `terpedia-489015.terpedia_core.terpene_similarity_order_20260904` AS s
+USING (terpene_id, identity_set_key)
+ORDER BY s.similarity_rank;

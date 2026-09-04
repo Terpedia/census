@@ -18,6 +18,10 @@ provenance-preserving cross-reference array. The old-to-new mapping is in
 `terpedia-489015.terpedia_core.terpene_id_crosswalk_20260904`, and the
 pre-remap snapshot is retained as
 `terpedia-489015.terpedia_core.terpene_identity_set_pre_remap_20260904`.
+The structure-based display order is in
+`terpedia-489015.terpedia_core.terpene_similarity_order_20260904`; it groups
+exact Bemis–Murcko scaffolds and uses Morgan-2048 fingerprint hashes only for
+deterministic tie-breaking.
 
 ## Research question
 
