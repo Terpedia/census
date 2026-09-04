@@ -275,3 +275,32 @@ FROM `terpedia-489015.terpedia_core.terpene_identity_set` AS t
 JOIN `terpedia-489015.terpedia_core.terpene_similarity_order_20260904` AS s
 USING (terpene_id, identity_set_key)
 ORDER BY s.similarity_rank;
+
+-- 10. Exact PubChem CID recovery for T# identities that lacked a PubChem ID
+-- in the initial COCONUT-derived subset.
+SELECT
+  COUNT(*) AS queried_t_ids,
+  COUNTIF(pubchem_match_status = 'matched') AS newly_matched_t_ids,
+  COUNTIF(pubchem_match_status = 'not_found') AS unmatched_t_ids,
+  COUNTIF(ARRAY_LENGTH(SPLIT(pubchem_cids, ';')) > 1) AS multi_cid_t_ids,
+  MIN(retrieved_at) AS retrieved_at
+FROM `terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904`;
+
+-- 11. TeroKit source-declared purchasability mapped into T# identities.
+WITH terokit_t_ids AS (
+  SELECT DISTINCT t.terpene_id, x.source_record_id
+  FROM `terpedia-489015.terpedia_core.terpene_identity_set` AS t,
+    UNNEST(t.source_crossrefs) AS x
+  WHERE x.source_name = 'terokit_classified'
+), purchasable AS (
+  SELECT DISTINCT source_record_id, vendor, vendor_code, website
+  FROM `terpedia-489015.terpedia_raw.terokit_purchasable_molecules`
+)
+SELECT
+  COUNT(DISTINCT p.source_record_id) AS purchasable_source_records,
+  COUNT(DISTINCT t.terpene_id) AS purchasable_t_ids,
+  COUNT(DISTINCT p.vendor) AS vendor_labels,
+  COUNT(DISTINCT IF(t.terpene_id IS NULL, p.source_record_id, NULL))
+    AS purchasable_records_without_t_id
+FROM purchasable AS p
+LEFT JOIN terokit_t_ids AS t USING (source_record_id);

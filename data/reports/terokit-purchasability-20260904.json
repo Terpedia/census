@@ -1,0 +1,10 @@
+{
+  "retrieved_at_utc": "2026-09-04",
+  "source": "terpedia-489015.terpedia_raw.terokit_purchasable_molecules",
+  "purchasable_source_records": 16238,
+  "purchasable_t_ids": 13095,
+  "t_id_coverage_percent": 4.87,
+  "vendor_labels": 235,
+  "purchasable_source_records_without_t_id": 3143,
+  "evidence_caveat": "Source-declared catalog presence is not confirmation of current stock, price, purity, shipping eligibility, or continued vendor operation."
+}

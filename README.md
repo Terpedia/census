@@ -22,6 +22,9 @@ The structure-based display order is in
 `terpedia-489015.terpedia_core.terpene_similarity_order_20260904`; it groups
 exact Bemis–Murcko scaffolds and uses Morgan-2048 fingerprint hashes only for
 deterministic tie-breaking.
+The exact-InChIKey PubChem recovery audit is in
+`terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904` and can be
+reproduced with [`scripts/search_pubchem_ids.py`](scripts/search_pubchem_ids.py).
 
 ## Research question
 

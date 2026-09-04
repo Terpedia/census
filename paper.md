@@ -192,7 +192,7 @@ the same field. The external source coverage currently materialized is:
 | `coconut_terpenoids` | 199,234 | 199,405 |
 | `coconut_complete` | 202,461 | 202,743 |
 | `coconut_terpenoids_pubchem` | 177,313 | 177,449 |
-| `terokit_classified` | 154,835 | 155,343 |
+| `terokit_classified` | 145,354 | 145,779 |
 | `supernatural2_records` | 95,357 | 217,551 |
 | `patent_compound_search` | 1,325 | 15,395 |
 | `unii_records` | 3,204 | 3,331 |
@@ -231,6 +231,44 @@ family ordering, not a claim that adjacent rows have a quantified Tanimoto
 similarity. T# remains the identity handle; `similarity_rank` is a replaceable,
 versioned presentation order.
 
+### 7.6 Evidence provenance and commercial availability
+
+The current T# census preserves database and file provenance, but it does not
+yet assign a uniform experimental-evidence status to every identity. COCONUT
+records retain source identifiers, collection labels, organisms, DOIs,
+release, manifest, and source-file provenance. These establish that the
+compound was aggregated as a natural product; they do not by themselves show
+whether it was isolated, analytically measured, computationally predicted, or
+copied from another database. COCONUT's `np_classifier_*` fields are
+computational classifications and must remain distinguishable from reported
+organism occurrence and experimental measurements.
+
+TeroKit contributes explicit source categories, reactions, enzymes, and
+vendor records. The T# gate accepts only TeroKit's explicit terpene/terpenoid
+categories as `confirmed_source_declared_terpenoid`; this is confirmation of
+the source declaration, not independent ChEBI/PubChem classification or
+experimental production evidence. PubChem CID resolution likewise confirms a
+chemical identifier match, not terpene classification, natural occurrence,
+or experimental measurement.
+
+TeroKit currently marks **16,238 source molecule records** as purchasable.
+After identity resolution, these correspond to **13,095 distinct T#
+identities** (4.87% of the T# set) and 235 vendor labels. A further 3,143
+purchasable TeroKit source records do not map into the confirmed T# set.
+`Purchasable` here means present in the ingested TeroKit vendor snapshot; it
+does not establish current stock, price, purity, shipping eligibility, or
+continued vendor operation.
+
+Independent commercial confirmation should be represented as a separate,
+time-varying assertion table rather than embedded in chemical identity. Each
+observation should preserve `terpene_id`, vendor, vendor SKU, product URL,
+catalog release or retrieval timestamp, availability status, price and
+currency when redistribution is permitted, matched chemical key, source
+artifact checksum, and verification method. Aggregators and historical
+collections—including eMolecules, MolPort, Chemspace, make-on-demand
+collections, and dated NCI plates—must not be treated as equivalent to a
+current first-party in-stock listing.
+
 The final report should publish at least three totals:
 
 1. source-row counts;
@@ -247,10 +285,21 @@ and those counts are unique PubChem records annotated by the selected
 classification. A name search for *terpene* is not equivalent to a structural
 class count.
 
-The current Terpedia inventory contains **177,449 COCONUT records that have a
-PubChem ID**, representing **177,313 unique chemical identities**. This is a
-COCONUT subset with PubChem identifiers, not the number of terpenes in PubChem.
-A reproducible PubChem result must state the classification system
+The initial Terpedia inventory contained **177,449 COCONUT records that have a
+PubChem ID**, representing **177,313 unique T# identities**. The remaining
+91,611 T# identities were queried through PubChem PUG REST by exact InChIKey on
+2026-09-04. **48,708** produced at least one CID and **42,903** returned no
+exact match; 12 matched identities returned more than one CID. The combined
+known coverage is therefore **226,021 of 268,924 T# identities (84.05%)**.
+The complete audited lookup is
+`terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904`.
+
+An exact CID match confirms only that PubChem contains the same standardized
+structure. It does not mean PubChem classifies the compound as a terpene, nor
+does it establish biological occurrence or experimental measurement. The
+COCONUT subset and newly resolved CIDs are therefore identifier coverage, not
+the number of terpenes in PubChem. A reproducible PubChem-wide class result
+must state the classification system
 (for example, ChEBI, KEGG, or PubChem Chemical Classes), selected node,
 record type (CID or SID), retrieval date, and whether descendants are
 included. Strict terpene and broad terpenoid counts should be reported
