@@ -11,8 +11,8 @@ evidence.
 | Prevent identity identifiers from confirming terpene class | Complete | Corrected classification template in `queries.sql` |
 | COCONUT–TeroKit candidate union | Complete | `data/reports/coconut-terokit-union-20260903.json` |
 | Exact PubChem identity coverage | Partial | Recovery audit exists; imported CIDs still require structure revalidation |
-| Identity-policy sensitivity | Missing | Recompute stereochemical, standard-InChI, connectivity, and parent counts |
-| Per-T# chemical-class evidence | Missing | Materialize ontology/source evidence and statuses for every T# |
+| Identity-policy sensitivity | Complete for current T# snapshot | RDKit 2026.03.6 analysis in `data/reports/identity-sensitivity-20260904.json` |
+| Per-T# chemical-class evidence | Partial | Source evidence exists; whole-corpus QC exposed fluorinated and disconnected-structure review strata |
 | Classification error estimate | Missing | Preregister and execute stratified manual audit with confidence intervals |
 | Cross-source completeness | Partial | Seven cross-reference sources mapped; named sources remain outside the union |
 | Reaction/network coverage | Complete for current graph snapshot | `data/reports/marts-network-coverage-20260904.json` |

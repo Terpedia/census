@@ -31,6 +31,12 @@ The aggregate RDKit Rule-of-Five census is recorded in
 The MARTS-DB enzyme/promiscuity census and current T# metabolic-network
 coverage are recorded in
 [`data/reports/marts-network-coverage-20260904.json`](data/reports/marts-network-coverage-20260904.json).
+Initial classification and structure-quality flags are recorded in
+[`data/reports/classification-qc-20260904.json`](data/reports/classification-qc-20260904.json).
+Identity-policy sensitivity is computed by
+[`scripts/identity_sensitivity.py`](scripts/identity_sensitivity.py) and
+recorded in
+[`data/reports/identity-sensitivity-20260904.json`](data/reports/identity-sensitivity-20260904.json).
 
 ## Research question
 

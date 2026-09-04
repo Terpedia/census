@@ -1,0 +1,22 @@
+{
+  "queried_at_utc": "2026-09-04",
+  "table": "terpedia-489015.terpedia_core.terpene_identity_set",
+  "total_t_ids": 268924,
+  "distinct_standard_inchi": 268924,
+  "distinct_stored_full_inchikey": 199234,
+  "missing_stored_inchikey": 69690,
+  "distinct_stored_smiles": 268922,
+  "disconnected_smiles_rows": 1235,
+  "fluorinated_formula_rows": 584,
+  "fluorinated_by_defining_source": {
+    "terokit_classified": 584,
+    "coconut_terpenoids": 0
+  },
+  "example_high_priority_review": {
+    "terpene_id": "T10000001",
+    "molecular_formula": "C10F14",
+    "source_membership": "terokit_classified",
+    "classification_evidence": "terokit_category"
+  },
+  "interpretation": "Fluorination and disconnected structures are review flags, not universal automatic exclusions. Fluorine was determined from parsed atoms; a naive molecular-formula regex overcounted five Fe-containing COCONUT records. The perfluorinated example is incompatible with an ordinary biosynthetic terpene interpretation absent extraordinary source evidence. Missing stored InChIKeys are a data-completeness issue because every row has standard InChI and an InChIKey can be recomputed."
+}

@@ -352,3 +352,25 @@ ORDER BY structure_match_mode;
 SELECT *
 FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3`
 ORDER BY stratum;
+
+-- 14. Classification and structure-quality flags. These are review flags,
+-- not automatic exclusions; each flagged identity retains source evidence.
+SELECT
+  COUNT(*) AS t_rows,
+  COUNT(DISTINCT inchi) AS distinct_standard_inchi,
+  COUNT(DISTINCT inchikey) AS distinct_stored_full_inchikey,
+  COUNT(DISTINCT smiles) AS distinct_stored_smiles,
+  COUNTIF(inchikey IS NULL OR TRIM(inchikey) = '') AS missing_stored_inchikey,
+  COUNTIF(STRPOS(smiles, '.') > 0) AS disconnected_smiles_rows,
+  COUNTIF(REGEXP_CONTAINS(molecular_formula, r'F([^a-z]|$)'))
+    AS fluorinated_formula_rows
+FROM `terpedia-489015.terpedia_core.terpene_identity_set`;
+
+SELECT
+  source,
+  COUNT(DISTINCT terpene_id) AS fluorinated_t_ids
+FROM `terpedia-489015.terpedia_core.terpene_identity_set`,
+  UNNEST(source_memberships) AS source
+WHERE REGEXP_CONTAINS(molecular_formula, r'F([^a-z]|$)')
+GROUP BY source
+ORDER BY fluorinated_t_ids DESC;

@@ -1,0 +1,19 @@
+{
+  "computed_at_utc": "2026-09-04T12:05:45.051876+00:00",
+  "rdkit_version": "2026.03.6",
+  "input": "CSV export of terpedia-489015.terpedia_core.terpene_identity_set (terpene_id, identity_set_key, smiles)",
+  "rows": 268924,
+  "invalid_smiles": 0,
+  "disconnected_input_rows": 1235,
+  "fluorinated_rows": 584,
+  "distinct_counts": {
+    "rdkit_standard_inchi": 268919,
+    "rdkit_full_inchikey": 268919,
+    "connectivity_inchikey_block": 136713,
+    "canonical_isomeric_smiles": 268919,
+    "canonical_nonisomeric_smiles": 137065,
+    "fragment_parent_full_inchikey": 268841,
+    "fragment_parent_connectivity_block": 136046
+  },
+  "policy_boundary": "These are identity-policy sensitivity counts, not terpene-class validation. FragmentParent applies RDKit's standard fragment-parent operation; connectivity blocks discard stereochemical and protonation layers."
+}

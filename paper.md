@@ -362,6 +362,55 @@ materialized. The final BioAssay report must distinguish assay participation
 from an active result and should separately count tested, active, inactive,
 inconclusive, and unspecified outcomes.
 
+### 7.9 Classification and structure-quality audit
+
+An initial whole-corpus quality screen demonstrates why source declaration
+cannot be equated with validated terpene membership. Although every T# row has
+a standard InChI, 69,690 rows lack a stored InChIKey and 1,235 SMILES contain
+multiple disconnected components. InChIKeys can be recomputed, but the missing
+field prevents a stored-key audit from covering the full corpus without that
+normalization step.
+
+Atom-level parsing found **584 fluorinated structures**, all in the
+TeroKit-defined candidate set. A naive formula search initially overcounted
+five iron-containing COCONUT structures because `Fe` contains the character
+`F`; this failed check is retained as a warning against text-only chemical
+quality control. Fluorination is a review flag rather than a universal
+exclusion because rare natural organofluorines exist. However, records such as
+`T10000001` (`C10F14`), admitted solely through a TeroKit category, are
+incompatible with an ordinary biosynthetic-terpene interpretation absent
+extraordinary source evidence. Such records must be reviewed or excluded from
+the validated tier while remaining traceable in the source and candidate
+tiers. The dated aggregate and example are preserved in
+[`data/reports/classification-qc-20260904.json`](data/reports/classification-qc-20260904.json).
+
+### 7.10 Identity-policy sensitivity
+
+Recomputation from all 268,924 T# SMILES with RDKit 2026.03.6 produced 268,919
+distinct standard InChIs, full InChIKeys, and canonical isomeric SMILES. Thus
+five identities in the source-keyed table collide after one shared parsing and
+identifier-generation pipeline. Removing stereochemistry reduced the count to
+137,065 canonical SMILES; the first InChIKey connectivity block produced
+136,713 groups. Applying RDKit's fragment-parent operation to disconnected
+structures yielded 268,841 full keys and 136,046 connectivity groups.
+
+| Identity policy | Distinct structures/groups |
+|---|---:|
+| Source-keyed T# rows | 268,924 |
+| Recomputed standard InChI/full InChIKey | 268,919 |
+| Canonical isomeric SMILES | 268,919 |
+| Canonical non-isomeric SMILES | 137,065 |
+| InChIKey connectivity block | 136,713 |
+| Fragment-parent full InChIKey | 268,841 |
+| Fragment-parent connectivity block | 136,046 |
+
+These are sensitivity analyses, not competing claims that one policy is
+universally correct. The nearly twofold difference after stereochemistry is
+removed shows why every reported census must declare whether stereoisomers are
+counted separately. The executable analysis and dated output are
+[`scripts/identity_sensitivity.py`](scripts/identity_sensitivity.py) and
+[`data/reports/identity-sensitivity-20260904.json`](data/reports/identity-sensitivity-20260904.json).
+
 The final report should publish at least three totals:
 
 1. source-row counts;
