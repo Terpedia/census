@@ -10,6 +10,15 @@ The first web search suggests that there is no single stable answer. Published a
 - [`sources.md`](sources.md) — source ledger and search notes
 - [`queries.sql`](queries.sql) — BigQuery inventory, count, and overlap queries
 
+The materialized identity table is
+`terpedia-489015.terpedia_core.terpene_identity_set`. Its `T#` value is a
+snapshot-stable curation handle with a carbon-count prefix (`T10`, `T15`,
+`T20`, `T25`, `T30`, `T40`, or `TXX`); `source_crossrefs` is the exact-key,
+provenance-preserving cross-reference array. The old-to-new mapping is in
+`terpedia-489015.terpedia_core.terpene_id_crosswalk_20260904`, and the
+pre-remap snapshot is retained as
+`terpedia-489015.terpedia_core.terpene_identity_set_pre_remap_20260904`.
+
 ## Research question
 
 When a source says “there are N terpenes,” what exactly is being counted?

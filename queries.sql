@@ -232,3 +232,32 @@ SELECT
 FROM product_edges AS p
 JOIN classified_products AS c
   ON c.source_record_id = p.product_id;
+
+-- 8. T# cross-reference coverage. This reports only exact-key matches; it is
+-- not a claim that sources lacking compatible chemical keys are absent.
+SELECT
+  x.source_name,
+  COUNT(*) AS crossref_records,
+  COUNT(DISTINCT t.terpene_id) AS t_ids
+FROM `terpedia-489015.terpedia_core.terpene_identity_set` AS t,
+  UNNEST(t.source_crossrefs) AS x
+GROUP BY x.source_name
+ORDER BY x.source_name;
+
+-- 8b. Overall T# coverage sanity check.
+SELECT
+  COUNT(*) AS t_rows,
+  COUNT(DISTINCT terpene_id) AS t_ids,
+  COUNTIF(ARRAY_LENGTH(source_crossrefs) > 0) AS rows_with_crossrefs
+FROM `terpedia-489015.terpedia_core.terpene_identity_set`;
+
+-- 8c. Carbon-count grouping used by the T# prefix.
+SELECT
+  terpene_size_class,
+  carbon_count,
+  COUNT(*) AS t_ids,
+  MIN(terpene_id) AS first_t_id,
+  MAX(terpene_id) AS last_t_id
+FROM `terpedia-489015.terpedia_core.terpene_identity_set`
+GROUP BY terpene_size_class, carbon_count
+ORDER BY carbon_count;

@@ -170,6 +170,56 @@ record has independent experimental confirmation. Future refreshes must either
 preserve the existing mapping or publish a versioned crosswalk before assigning
 new T# values.
 
+### 7.4 Cross-references into the T# set
+
+The T# table now contains a repeated `source_crossrefs` field. Each element
+stores the source name, source record ID, matched key type, release, manifest,
+and source-file URI. Matching is exact on a typed standard InChI or InChIKey;
+name-only matching is deliberately excluded. Cross-references are provenance
+links and do not add new chemical identities to the T# set.
+
+The refreshed table is `terpedia-489015.terpedia_core.terpene_identity_set`.
+T# values now encode the carbon-count bucket: `T10`, `T15`, `T20`, `T25`,
+`T30`, and `T40` identify the canonical mono-, sesqui-, di-, sester-, tri-,
+and tetraterpene-sized groups; `TXX` is used for other or unresolved carbon
+counts. Within each bucket, numbering is deterministic by carbon count and
+identity key. It contains **268,924 T# rows**, and every one currently has at least one
+cross-reference because the defining COCONUT/TeroKit membership is retained in
+the same field. The external source coverage currently materialized is:
+
+| Source | Distinct T# rows referenced | Cross-reference records |
+|---|---:|---:|
+| `coconut_terpenoids` | 199,234 | 199,405 |
+| `coconut_complete` | 202,461 | 202,743 |
+| `coconut_terpenoids_pubchem` | 177,313 | 177,449 |
+| `terokit_classified` | 154,835 | 155,343 |
+| `supernatural2_records` | 95,357 | 217,551 |
+| `patent_compound_search` | 1,325 | 15,395 |
+| `unii_records` | 3,204 | 3,331 |
+
+This does **not** yet support the stronger statement that every terpene in
+every Terpedia dataset is represented by a T#. The current T# set is defined
+from COCONUT terpenoids plus confirmed TeroKit terpenoids. For the six sources
+above, all records with a usable key in the T# cross-reference query are
+reported, but several sources contain many identities outside the current
+terpene union. Other Terpedia sources are not yet safely matchable at the
+record level: some are reaction, measurement, organism, or literature
+relations; others need PubChem/ChEBI or structure normalization first. These
+include the current Rhea/ChEBI/PubChem RDF layer, LOTUS, Dr. Duke, NAEB,
+TCMID, BRENDA, cannabis measurement tables, CannabisDB, KNApSAcK, EssoilDB,
+and SAIR relation tables. They must be added through explicit identifier
+crosswalks, not inferred from names.
+
+The remap was protected by the versioned table
+`terpedia-489015.terpedia_core.terpene_identity_set_pre_remap_20260904` and
+the old-to-new table
+`terpedia-489015.terpedia_core.terpene_id_crosswalk_20260904`; both contain
+268,924 identity rows.
+
+Thus the defensible current claim is: **all 268,924 T# identities have at
+least one exact-key provenance link, but complete all-dataset coverage has not
+yet been demonstrated.**
+
 The final report should publish at least three totals:
 
 1. source-row counts;
