@@ -43,6 +43,47 @@ FROM `terpedia-489015.terpedia_raw.terokit_reaction_enzymes`;
 --   FROM `terpedia-489015.terpedia_raw.coconut_terpenoids`
 -- ) WHERE standard_inchi_key IS NOT NULL;
 
+-- 4b. Classification audit template.
+-- Adapt field names per source after step 2. Do not infer terpene status from
+-- the table name alone. Preserve all evidence and provenance columns.
+-- SELECT
+--   source_id,
+--   source_release,
+--   manifest_uri,
+--   retrieved_at,
+--   content_sha256,
+--   standard_inchi_key AS identity_key,
+--   STRUCT(
+--     chemical_class AS source_class,
+--     direct_parent,
+--     chebi_id,
+--     pubchem_cid,
+--     canonical_structure_hash
+--   ) AS classification_evidence,
+--   CASE
+--     WHEN LOWER(chemical_class) IN ('terpene', 'terpenoid', 'isoprenoid')
+--       OR LOWER(direct_parent) LIKE '%terpen%'
+--       OR chebi_id IS NOT NULL OR pubchem_cid IS NOT NULL
+--       THEN 'confirmed'
+--     WHEN standard_inchi_key IS NOT NULL
+--       AND canonical_structure_hash IS NOT NULL
+--       THEN 'probable'
+--     WHEN standard_inchi_key IS NULL
+--       AND canonical_structure_hash IS NULL
+--       THEN 'ambiguous'
+--     ELSE 'excluded'
+--   END AS classification_status
+-- FROM `terpedia-489015.terpedia_raw.<source_table>`;
+
+-- 4c. Count only classified molecule identities. Relation/measurement tables
+-- must not be included in this union.
+-- SELECT source_id, classification_status,
+--        COUNT(*) AS source_rows,
+--        COUNT(DISTINCT identity_key) AS unique_identities
+-- FROM `<classification_audit_table>`
+-- WHERE classification_status IN ('confirmed', 'probable')
+-- GROUP BY source_id, classification_status;
+
 -- 5. Pairwise overlap template after normalizing each source to identity_key.
 -- WITH a AS (... SELECT DISTINCT identity_key FROM ...),
 --      b AS (... SELECT DISTINCT identity_key FROM ...)
