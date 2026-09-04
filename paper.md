@@ -102,7 +102,24 @@ are `Others` or `Steroids`. The 145,354 figure is a TeroKit result pending
 cross-source deduplication; it is not the Terpedia-wide total and source
 category evidence is not independent chemical proof.
 
-### 7.1 Reaction-product coverage proxy
+### 7.1 COCONUT–TeroKit cross-source union
+
+The first executed cross-source join, run in BigQuery in `us-central1` on
+2026-09-03, found **268,924 unique chemical identities** across the confirmed
+COCONUT terpenoid table and the confirmed source-declared TeroKit terpenoid
+view. The source-specific counts were 199,234 COCONUT identities and 145,354
+TeroKit identities, with **75,664 identities in common**:
+
+`199,234 + 145,354 - 75,664 = 268,924`
+
+This is the first measured Terpedia cross-source result, but it is not yet the
+Terpedia-wide total. The join used standard InChI because that key is currently
+available in both tables; a final release should rerun it after both sources
+pass through the same canonicalization pipeline and should retain both the
+original and canonical keys. The result is stored in
+[`data/reports/coconut-terokit-union-20260903.json`](data/reports/coconut-terokit-union-20260903.json).
+
+### 7.2 Reaction-product coverage proxy
 
 TeroKit provides a useful network-completeness proxy because its reaction
 table distinguishes `substrate_ids` from `product_id`. In the local TeroKit
