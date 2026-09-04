@@ -86,7 +86,7 @@ The first confirmed BigQuery inventory gives these raw row counts:
 |---|---:|---|
 | `coconut_complete` | 695,133 | Broad COCONUT source table |
 | `coconut_terpenoids` | 199,405 | Terpenoid subset; do not add to `coconut_complete` |
-| `coconut_terpenoids_pubchem` | 177,449 | Derived/linked subset; do not add to COCONUT totals |
+| `coconut_terpenoids_pubchem` | 177,449 | Has PubChem ID; derived subset; do not add to COCONUT totals |
 | `terokit_molecules` | 337,904 | Molecule table |
 | `terokit_purchasable_molecules` | 165,736 | Vendor relation/catalog; not an independent molecule universe |
 | `terokit_reaction_molecules` | 9,584 | Reaction relation; not an independent molecule universe |
@@ -247,9 +247,10 @@ and those counts are unique PubChem records annotated by the selected
 classification. A name search for *terpene* is not equivalent to a structural
 class count.
 
-The current Terpedia inventory contains **177,449 COCONUT records linked to
-PubChem**. This is a linked COCONUT subset, not the number of terpenes in
-PubChem. A reproducible PubChem result must state the classification system
+The current Terpedia inventory contains **177,449 COCONUT records that have a
+PubChem ID**, representing **177,313 unique chemical identities**. This is a
+COCONUT subset with PubChem identifiers, not the number of terpenes in PubChem.
+A reproducible PubChem result must state the classification system
 (for example, ChEBI, KEGG, or PubChem Chemical Classes), selected node,
 record type (CID or SID), retrieval date, and whether descendants are
 included. Strict terpene and broad terpenoid counts should be reported
