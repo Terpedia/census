@@ -126,10 +126,10 @@ The first confirmed BigQuery inventory gives these raw row counts:
 | `coconut_complete` | 695,133 | Broad COCONUT source table |
 | `coconut_terpenoids` | 199,405 | Terpenoid subset; do not add to `coconut_complete` |
 | `coconut_terpenoids_pubchem` | 177,449 | Has PubChem ID; derived subset; do not add to COCONUT totals |
-| `terokit_molecules` | 337,904 | Molecule table |
-| `terokit_purchasable_molecules` | 165,736 | Vendor relation/catalog; not an independent molecule universe |
-| `terokit_reaction_molecules` | 9,584 | Reaction relation; not an independent molecule universe |
-| `terokit_reaction_enzymes` | 27,974 | Enzyme relation; not a molecule count |
+| `terokit_molecules` | 168,952 | TeroKit V2.5 molecule table |
+| `terokit_purchasable_molecules` | 82,868 | Vendor relation/catalog; not an independent molecule universe |
+| `terokit_reaction_molecules` | 4,792 | Reaction relation; not an independent molecule universe |
+| `terokit_reaction_enzymes` | 13,987 | Enzyme relation; not a molecule count |
 
 These are row counts, not the Terpedia total. The current two-source candidate
 total is reported below; a complete Terpedia-wide or validated chemical total
@@ -138,9 +138,9 @@ the classified identity union. Names and labels are discovery fields only and
 cannot establish identity.
 
 The materialized TeroKit classification view provides the first source-grounded
-classification result. It contains **291,558 confirmed source-declared
-terpenoid rows representing 145,354 distinct identities** after collapsing a
-cross-category duplicate. A further **46,346 rows representing 23,061
+classification result. It contains **145,779 confirmed source-declared
+terpenoid rows representing 145,354 distinct identities**. A further **23,173
+rows representing 23,061
 identities** are marked ambiguous/not confirmed because their source categories
 are `Others` or `Steroids`. The 145,354 figure is a TeroKit result pending
 cross-source deduplication; it is not the Terpedia-wide total and source
@@ -165,14 +165,30 @@ total. A final release should still retain both the original and canonical
 keys and rerun the set operation after shared structure standardization. The result is stored in
 [`data/reports/coconut-terokit-union-20260903.json`](data/reports/coconut-terokit-union-20260903.json).
 
+The defining-source flow reconciles as follows:
+
+| Stage | COCONUT | TeroKit V2.5 |
+|---|---:|---:|
+| Source rows entering classification | 199,405 | 168,952 |
+| Rows accepted as source-declared candidates | 199,405 | 145,779 |
+| Rows retained as ambiguous/not confirmed | 0 | 23,173 |
+| Distinct accepted identities | 199,234 | 145,354 |
+| Within-source duplicate accepted rows | 171 | 425 |
+
+The 23,173 ambiguous TeroKit rows represent 23,061 identities. One also occurs
+in the confirmed TeroKit set; the other 23,060 are outside the candidate union.
+An audit on 2026-09-04 corrected earlier TeroKit source-row values that were
+exactly doubled by a duplicated ingestion. This changed the inventory counts
+but not the deduplicated source sets, their 75,664-member overlap, or the
+268,924-member union. The complete accounting is in
+[`data/reports/source-flow-20260904.json`](data/reports/source-flow-20260904.json).
+
 ### 7.2 Reaction-product and metabolic-network coverage
 
 TeroKit provides a useful network-completeness proxy because its reaction
 table distinguishes `substrate_ids` from `product_id`. In the local TeroKit
-V2.5 file there are 4,792 reaction rows and 3,500 distinct product IDs. The
-cloud table currently contains 9,584 rows because two source releases are
-represented; these rows must be release-deduplicated before reporting a
-network total.
+V2.5 file and validated cloud table there are 4,792 reaction rows and 3,500
+distinct product IDs.
 
 The relevant quantity is not the number of reaction rows. It is the number of
 distinct product-side chemical identities that are also classified as

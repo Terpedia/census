@@ -1,5 +1,6 @@
 {
   "generated_at": "2026-09-03",
+  "audited_and_corrected_at": "2026-09-04",
   "location": "us-central1",
   "identity_set_key": "typed standard InChI, then InChIKey, then structure fallback",
   "sources": {
@@ -9,9 +10,11 @@
       "classification": "source_declared_terpenoid"
     },
     "terokit_classified": {
-      "raw_rows": 291558,
+      "source_rows_after_release_deduplication": 145779,
       "unique_identities": 145354,
-      "classification": "confirmed_source_declared_terpenoid"
+      "classification": "confirmed_source_declared_terpenoid",
+      "source_release": "TeroKit_V2.5",
+      "source_sha256": "e16b46b3011fb0c9f1a91928bf6c1fd206ad0eee0b9eb8f31ed5e86fa0cf3ec6"
     }
   },
   "cross_source_overlap": 75664,
@@ -24,6 +27,7 @@
   },
   "caveats": [
     "This is a COCONUT-plus-TeroKit union, not the Terpedia-wide total.",
+    "The previously reported TeroKit row count of 291,558 was a duplicated ingestion count. The validated classification table has 145,779 confirmed source rows; this correction does not change its 145,354 unique identities or the union.",
     "The set key prefers standard InChI, then InChIKey, then a structure fallback; this run used standard InChI for every member.",
     "Classification evidence is source-declared and is not independent chemical proof."
   ]

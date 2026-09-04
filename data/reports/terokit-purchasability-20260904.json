@@ -1,6 +1,8 @@
 {
   "retrieved_at_utc": "2026-09-04",
   "source": "terpedia-489015.terpedia_raw.terokit_purchasable_molecules",
+  "source_release": "TeroKit_V2.5",
+  "raw_vendor_relation_rows": 82868,
   "purchasable_source_records": 16238,
   "purchasable_t_ids": 13095,
   "t_id_coverage_percent": 4.87,

@@ -1,0 +1,42 @@
+{
+  "analysis_date": "2026-09-04",
+  "project": "terpedia-489015",
+  "location": "us-central1",
+  "identity_rule": "typed standard InChI",
+  "coconut_terpenoids": {
+    "source_rows": 199405,
+    "rows_with_identity": 199405,
+    "rows_without_identity": 0,
+    "distinct_identities": 199234,
+    "within_source_duplicate_rows": 171,
+    "classification": "source_declared_terpenoid"
+  },
+  "terokit_v2_5": {
+    "source_molecule_rows": 168952,
+    "source_record_ids": 168952,
+    "source_sha256": "e16b46b3011fb0c9f1a91928bf6c1fd206ad0eee0b9eb8f31ed5e86fa0cf3ec6",
+    "confirmed_source_rows": 145779,
+    "confirmed_distinct_identities": 145354,
+    "confirmed_within_source_duplicate_rows": 425,
+    "ambiguous_source_rows": 23173,
+    "ambiguous_distinct_identities": 23061,
+    "ambiguous_within_source_duplicate_rows": 112,
+    "confirmed_ambiguous_identity_overlap": 1,
+    "ambiguous_identities_outside_candidate_union": 23060,
+    "rows_without_identity": 0
+  },
+  "candidate_union": {
+    "coconut_distinct_identities": 199234,
+    "terokit_confirmed_distinct_identities": 145354,
+    "cross_source_overlap": 75664,
+    "union_identities": 268924,
+    "arithmetic": "199234 + 145354 - 75664 = 268924"
+  },
+  "terokit_relation_tables": {
+    "purchasable_rows": 82868,
+    "reaction_molecule_rows": 4792,
+    "reaction_enzyme_rows": 13987,
+    "counting_rule": "Relations are excluded from the molecule union."
+  },
+  "correction": "Earlier manuscript values of 337,904 molecule rows, 165,736 vendor rows, 9,584 reaction rows, 27,974 enzyme rows, 291,558 confirmed rows, and 46,346 ambiguous rows were duplicated ingestion counts exactly twice the validated TeroKit V2.5 snapshot. Identity-deduplicated union counts were unaffected."
+}

@@ -10,6 +10,7 @@ evidence.
 | Separate source records, candidate identities, and validated identities | Complete | Three-tier framework in paper section 5 |
 | Prevent identity identifiers from confirming terpene class | Complete | Corrected classification template in `queries.sql` |
 | COCONUT–TeroKit candidate union | Complete | `data/reports/coconut-terokit-union-20260903.json` |
+| Defining-source flow accounting | Complete | Raw, accepted, ambiguous, duplicate, overlap, and union counts reconcile in `data/reports/source-flow-20260904.json` |
 | Exact PubChem identity coverage | Complete for current T# snapshot | Every T# requeried uniformly; `data/reports/pubchem-complete-lookup-20260904.json` |
 | Identity-policy sensitivity | Complete for current T# snapshot | RDKit 2026.03.6 analysis in `data/reports/identity-sensitivity-20260904.json` |
 | Per-T# chemical-class evidence | Complete for ChEBI 239 + MARTS frontier | Every T# is graded in `terpene_classification_evidence_20260904_v2`; 6,585 exact ChEBI matches and 54 direct MARTS products yield a 6,605-member A-or-B union |
