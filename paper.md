@@ -93,6 +93,30 @@ The first confirmed BigQuery inventory gives these raw row counts:
 
 These are row counts, not the Terpedia total. The current defensible total is therefore **not yet a single integer** until BigQuery and RDF are joined on chemical identity. The primary deduplication key is `standard_inchi_key`/InChIKey; if absent, use a validated canonical-structure hash. Names and labels are discovery fields only and cannot establish identity.
 
+### 7.1 Reaction-product coverage proxy
+
+TeroKit provides a useful network-completeness proxy because its reaction
+table distinguishes `substrate_ids` from `product_id`. In the local TeroKit
+V2.5 file there are 4,792 reaction rows and 3,500 distinct product IDs. The
+cloud table currently contains 9,584 rows because two source releases are
+represented; these rows must be release-deduplicated before reporting a
+network total.
+
+The relevant quantity is not the number of reaction rows. It is the number of
+distinct product-side chemical identities that are also classified as
+terpenes/terpenoids. The reproducible query in `queries.sql` reports both the
+source-ID count and the stronger structure-identity count, separating:
+
+- distinct reaction products;
+- products classified as source-declared terpenoids;
+- products not yet confirmed as terpenoids; and
+- ambiguous product identities.
+
+Until that join is executed, **3,500 is the observed local product-ID
+universe, not the number of terpene products**. A product-side reaction edge
+also indicates a modeled biochemical transformation, not proof that the
+reaction occurs in a particular organism in vivo.
+
 The final report should publish at least three totals:
 
 1. source-row counts;
@@ -140,3 +164,53 @@ The headline result should therefore be a classification table, not one inflated
 ## References
 
 See [`sources.md`](sources.md) for links and provenance notes.
+
+## 9. Organism provenance: who produces a terpene?
+
+The current Terpedia data layer can often answer a weaker but measurable
+question—**which organism or biological sample has been associated with a
+compound?** It cannot automatically answer the stronger question—**which
+organism biosynthesizes the compound?** A structure record alone contains no
+organism evidence.
+
+| Source | Organism or biological context available | Evidence level for production | Counting use |
+|---|---|---|---|
+| COCONUT | Source `organisms` field, plus collections and DOI fields | Reported natural-product source; preserve the original assertion and resolve names separately | Best immediate organism–compound join for the COCONUT records |
+| LOTUS | Linked organism–compound–literature assertions | Reported occurrence when supported by its contributing source; source lineage is required | High-value future cross-source occurrence graph; current serving tier is raw/document |
+| Dr. Duke | Plant, plant part, compound, concentration/activity, and literature fields | Reported phytochemical occurrence when a compound and plant record are linked; concentration and activity must not be conflated | Validated and promising for plant–compound occurrence |
+| NAEB | Species and ethnobotanical-use records | Plant-use context, not evidence that the plant produces a particular terpene | Context only unless linked to a separate compound occurrence claim |
+| KNApSAcK | Species–metabolite domain and mass-spectra records | Reported species–metabolite association; spectra support identity, not biosynthesis | Useful after licensing and field-level validation |
+| EssoilDB | Essential-oil composition records | Measured or reported composition in an oil/sample, depending on record provenance | Useful for plant/sample composition; latest load has quality gaps |
+| Cannabis profiles | Strain/sample name, provider, and terpene concentration measurements | Quantified sample composition; strain identity is not necessarily a taxonomically resolved organism | Strong for Cannabis sample/chemotype analysis, not general organism production |
+| TeroKit | Molecules, categories, reactions, and enzymes | Chemical classification and biochemical relationships; no organism source by default | Molecule census and pathway context, not organism attribution |
+| PubMed/Terport RDF | Article metadata and literature records | Literature mention unless the article text explicitly reports isolation, detection, or biosynthesis | Evidence discovery; requires extraction and manual/structured validation |
+
+The organism graph should preserve the distinction among at least four claim
+types:
+
+1. `reported_in_species`: a source reports the compound in a named organism;
+2. `quantified_in_sample`: an analytical sample contains a measured amount;
+3. `isolated_from_species`: the compound was isolated from a biological source;
+4. `biosynthesized_by_organism`: experimental or pathway evidence supports
+   production by that organism.
+
+These claims are not interchangeable. A strain label is not a taxon, a plant
+name in a database is not proof of a measured compound, and a reaction or
+terpene-synthase annotation is not proof that the complete pathway operates in
+the named organism. Taxonomic names should be normalized through a versioned
+backbone such as World Flora Online, Catalogue of Life, or NCBI Taxonomy while
+retaining the original name exactly as reported.
+
+The immediate census deliverable should therefore be a separate
+organism-association table keyed by `identity_key` and containing:
+`original_organism_name`, `normalized_taxon_id`, `organism_rank`, `plant_part`
+or sample context, `claim_type`, `measurement_value` and units when present,
+`source_record_id`, citation, release/manifest, and an evidence status. It
+should report the number of distinct compounds with any organism association,
+the number with quantified sample evidence, and the number with stronger
+isolation or biosynthesis evidence. Those counts must not be merged into the
+chemical-identity total.
+
+The strongest near-term sources are COCONUT and Dr. Duke for reported plant
+occurrence, the cannabis measurement view for sample composition, and LOTUS or
+Plant Metabolic Network for literature-linked and pathway-level expansion.

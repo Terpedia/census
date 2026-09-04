@@ -101,3 +101,49 @@ FROM `terpedia-489015.terpedia_raw.terokit_reaction_enzymes`;
 --   ?entity ?predicate ?label .
 --   FILTER(isLiteral(?label) && CONTAINS(LCASE(STR(?label)), 'terpen'))
 -- }
+
+-- 7. TeroKit completeness proxy: confirmed terpene/terpenoid products that
+-- occur on the product side of at least one reaction.
+-- Do not count every reaction row: rows may repeat across releases, and
+-- reaction participation is not the same as production.
+WITH confirmed_molecules AS (
+  SELECT DISTINCT source_record_id
+  FROM `terpedia-489015.terpedia_raw.terokit_molecule_classification`
+  WHERE classification_status = 'confirmed_source_declared_terpenoid'
+    AND identity_key IS NOT NULL
+), product_edges AS (
+  SELECT DISTINCT reaction_id, product_id
+  FROM `terpedia-489015.terpedia_raw.terokit_reaction_molecules`
+  WHERE NULLIF(TRIM(product_id), '') IS NOT NULL
+)
+SELECT
+  COUNT(DISTINCT p.reaction_id) AS reactions_with_products,
+  COUNT(DISTINCT p.product_id) AS distinct_reaction_products,
+  COUNT(DISTINCT IF(c.source_record_id IS NOT NULL, p.product_id, NULL))
+    AS distinct_confirmed_terpenoid_products,
+  COUNT(DISTINCT IF(c.source_record_id IS NULL, p.product_id, NULL))
+    AS products_not_confirmed_as_terpenoids
+FROM product_edges AS p
+LEFT JOIN confirmed_molecules AS c
+  ON c.source_record_id = p.product_id;
+
+-- 7b. Structure-identity version: collapse multiple TeroKit source IDs or
+-- releases onto identity_key after selecting product-side reaction edges.
+WITH product_edges AS (
+  SELECT DISTINCT reaction_id, product_id
+  FROM `terpedia-489015.terpedia_raw.terokit_reaction_molecules`
+  WHERE NULLIF(TRIM(product_id), '') IS NOT NULL
+), classified_products AS (
+  SELECT DISTINCT source_record_id, identity_key, classification_status
+  FROM `terpedia-489015.terpedia_raw.terokit_molecule_classification`
+  WHERE identity_key IS NOT NULL
+)
+SELECT
+  COUNT(DISTINCT IF(c.classification_status =
+      'confirmed_source_declared_terpenoid', c.identity_key, NULL))
+    AS distinct_confirmed_terpenoid_product_identities,
+  COUNT(DISTINCT IF(c.classification_status = 'ambiguous_not_confirmed',
+      c.identity_key, NULL)) AS distinct_ambiguous_product_identities
+FROM product_edges AS p
+JOIN classified_products AS c
+  ON c.source_record_id = p.product_id;
