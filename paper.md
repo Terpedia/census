@@ -93,6 +93,15 @@ The first confirmed BigQuery inventory gives these raw row counts:
 
 These are row counts, not the Terpedia total. The current defensible total is therefore **not yet a single integer** until BigQuery and RDF are joined on chemical identity. The primary deduplication key is `standard_inchi_key`/InChIKey; if absent, use a validated canonical-structure hash. Names and labels are discovery fields only and cannot establish identity.
 
+The materialized TeroKit classification view provides the first source-grounded
+classification result. It contains **291,558 confirmed source-declared
+terpenoid rows representing 145,354 distinct identities** after collapsing a
+cross-category duplicate. A further **46,346 rows representing 23,061
+identities** are marked ambiguous/not confirmed because their source categories
+are `Others` or `Steroids`. The 145,354 figure is a TeroKit result pending
+cross-source deduplication; it is not the Terpedia-wide total and source
+category evidence is not independent chemical proof.
+
 ### 7.1 Reaction-product coverage proxy
 
 TeroKit provides a useful network-completeness proxy because its reaction
@@ -125,7 +134,23 @@ The final report should publish at least three totals:
 
 The Colab notebook is read-only with respect to BigQuery. It should run the queries in [`queries.sql`](queries.sql), save result tables and the exact query timestamp, and never print or store the API key.
 
-## 8. Terpenes mentioned in PubMed literature
+## 8. PubChem coverage
+
+PubChem does not provide one canonical, database-wide count called “terpenes.”
+Its Classification Browser exposes counts by classification system and node,
+and those counts are unique PubChem records annotated by the selected
+classification. A name search for *terpene* is not equivalent to a structural
+class count.
+
+The current Terpedia inventory contains **177,449 COCONUT records linked to
+PubChem**. This is a linked COCONUT subset, not the number of terpenes in
+PubChem. A reproducible PubChem result must state the classification system
+(for example, ChEBI, KEGG, or PubChem Chemical Classes), selected node,
+record type (CID or SID), retrieval date, and whether descendants are
+included. Strict terpene and broad terpenoid counts should be reported
+separately, with overlap documented where the classification systems differ.
+
+## 9. Terpenes mentioned in PubMed literature
 
 Terpedia has a separate literature quantity: compounds named in PubMed-indexed records. This is not the same as the number of chemical identities in BigQuery or RDF. A paper can mention a terpene class without naming a molecule, and one molecule can appear under many spelling, stereochemical, and synonym forms.
 
@@ -139,7 +164,7 @@ The paper should report literature coverage at three levels:
 
 The current RDF snapshot is suitable for level 1, but it does not by itself prove that every article contains a named terpene. The `terpmed` panel is suitable for reproducible level-1 hit counts for its 25 predefined labels. A full literature-name census requires rerunning extraction over the PubMed title/abstract corpus, retaining `pmid`, exact matched span, normalized label, identity key, and evidence source.
 
-### 7.1 Classification gate
+### 9.1 Classification gate
 
 An observed row is not counted as a terpene merely because it came from a table with a terpene-related name. Each record must pass a classification gate and retain four fields:
 
@@ -161,11 +186,7 @@ Heuristics never establish terpene status on their own. COCONUT complete, SAIR, 
 
 The headline result should therefore be a classification table, not one inflated number: confirmed identities, probable candidates, ambiguous records, excluded relation/measurement rows, and the deduplicated union of confirmed identities across sources.
 
-## References
-
-See [`sources.md`](sources.md) for links and provenance notes.
-
-## 9. Organism provenance: who produces a terpene?
+## 10. Organism provenance: who produces a terpene?
 
 The current Terpedia data layer can often answer a weaker but measurable
 question—**which organism or biological sample has been associated with a
@@ -214,3 +235,7 @@ chemical-identity total.
 The strongest near-term sources are COCONUT and Dr. Duke for reported plant
 occurrence, the cannabis measurement view for sample composition, and LOTUS or
 Plant Metabolic Network for literature-linked and pathway-level expansion.
+
+## References
+
+See [`sources.md`](sources.md) for links and provenance notes.
