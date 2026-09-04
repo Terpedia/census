@@ -25,6 +25,8 @@ deterministic tie-breaking.
 The exact-InChIKey PubChem recovery audit is in
 `terpedia-489015.terpedia_core.terpene_pubchem_lookup_20260904` and can be
 reproduced with [`scripts/search_pubchem_ids.py`](scripts/search_pubchem_ids.py).
+The aggregate RDKit Rule-of-Five census is recorded in
+[`data/reports/lipinski-20260904.json`](data/reports/lipinski-20260904.json).
 
 ## Research question
 

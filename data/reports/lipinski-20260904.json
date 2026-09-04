@@ -1,0 +1,19 @@
+{
+  "computed_at_utc": "2026-09-04",
+  "method": "RDKit SMILES calculation",
+  "thresholds": {
+    "molecular_weight_max_da": 500,
+    "calculated_logp_max": 5,
+    "hydrogen_bond_donors_max": 5,
+    "hydrogen_bond_acceptors_max": 10
+  },
+  "total_t_ids": 268924,
+  "invalid_smiles": 0,
+  "zero_violations": 126439,
+  "one_violation": 65648,
+  "two_violations": 42044,
+  "three_violations": 34000,
+  "four_violations": 793,
+  "zero_violation_percent": 47.02,
+  "interpretation_caveat": "Rule-of-Five compliance is a computed property profile, not evidence of bioavailability, efficacy, safety, experimental measurement, or terpene classification."
+}

@@ -269,6 +269,38 @@ collections—including eMolecules, MolPort, Chemspace, make-on-demand
 collections, and dated NCI plates—must not be treated as equivalent to a
 current first-party in-stock listing.
 
+### 7.7 Lipinski Rule-of-Five profile
+
+All 268,924 T# SMILES parsed successfully with RDKit. Applying the standard
+four Rule-of-Five thresholds—molecular weight no greater than 500 Da, calculated
+logP no greater than 5, no more than 5 hydrogen-bond donors, and no more than
+10 hydrogen-bond acceptors—produced the following distribution:
+
+| Rule-of-Five violations | T# identities |
+|---:|---:|
+| 0 | 126,439 |
+| 1 | 65,648 |
+| 2 | 42,044 |
+| 3 | 34,000 |
+| 4 | 793 |
+
+Thus **126,439 T# identities (47.02%) meet all four Lipinski thresholds**.
+This is a computed physicochemical profile, not evidence of oral bioavailability,
+safety, efficacy, natural occurrence, or terpene classification. Many natural
+products fall outside the Rule of Five while remaining biologically relevant.
+
+### 7.8 PubChem BioAssay coverage
+
+Terpedia currently has a complete raw mirror of the PubChem BioAssay XML
+inventory, but the RDF promotion and queryable BigQuery projection remain
+partial. Consequently, a final count of T# identities with BioAssay data—and a
+final count of distinct BioAssays testing at least one T# identity—cannot yet be
+reported from the warehouse. PubChem PUG REST supports exact CID-to-AID
+retrieval and can provide an interim census once the complete T#–CID mapping is
+materialized. The final BioAssay report must distinguish assay participation
+from an active result and should separately count tested, active, inactive,
+inconclusive, and unspecified outcomes.
+
 The final report should publish at least three totals:
 
 1. source-row counts;

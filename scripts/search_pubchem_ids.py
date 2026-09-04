@@ -20,7 +20,7 @@ from rdkit import Chem, RDLogger
 from rdkit.Chem import inchi
 
 RDLogger.DisableLog("rdApp.*")
-BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{}/property/InChIKey/JSON"
+BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/property/InChIKey/JSON"
 
 
 def chunks(values, size):
@@ -29,9 +29,10 @@ def chunks(values, size):
 
 
 def fetch(keys, retries=5):
-    encoded = urllib.parse.quote(",".join(keys), safe=",-")
+    body = urllib.parse.urlencode({"inchikey": ",".join(keys)}).encode()
     request = urllib.request.Request(
-        BASE.format(encoded),
+        BASE,
+        data=body,
         headers={"User-Agent": "Terpedia-census/1.0 (contact: info@terpedia.com)"},
     )
     for attempt in range(retries):
@@ -57,7 +58,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_csv")
     parser.add_argument("output_csv")
-    parser.add_argument("--batch-size", type=int, default=100)
+    parser.add_argument("--batch-size", type=int, default=500)
     parser.add_argument("--requests-per-second", type=float, default=4.0)
     parser.add_argument("--limit", type=int)
     args = parser.parse_args()
