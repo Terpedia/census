@@ -9,6 +9,7 @@ The first web search suggests that there is no single stable answer. Published a
 - [`paper.md`](paper.md) — working paper draft
 - [`sources.md`](sources.md) — source ledger and search notes
 - [`queries.sql`](queries.sql) — BigQuery inventory, count, and overlap queries
+- [`SCIENTIFIC_REVIEW.md`](SCIENTIFIC_REVIEW.md) — evidence-based publication gate
 
 The materialized identity table is
 `terpedia-489015.terpedia_core.terpene_identity_set`. Its `T#` value is a
@@ -27,6 +28,9 @@ The exact-InChIKey PubChem recovery audit is in
 reproduced with [`scripts/search_pubchem_ids.py`](scripts/search_pubchem_ids.py).
 The aggregate RDKit Rule-of-Five census is recorded in
 [`data/reports/lipinski-20260904.json`](data/reports/lipinski-20260904.json).
+The MARTS-DB enzyme/promiscuity census and current T# metabolic-network
+coverage are recorded in
+[`data/reports/marts-network-coverage-20260904.json`](data/reports/marts-network-coverage-20260904.json).
 
 ## Research question
 

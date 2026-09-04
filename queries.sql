@@ -63,8 +63,9 @@ FROM `terpedia-489015.terpedia_raw.terokit_reaction_enzymes`;
 --   CASE
 --     WHEN LOWER(chemical_class) IN ('terpene', 'terpenoid', 'isoprenoid')
 --       OR LOWER(direct_parent) LIKE '%terpen%'
---       OR chebi_id IS NOT NULL OR pubchem_cid IS NOT NULL
 --       THEN 'confirmed'
+--     WHEN chebi_id IS NOT NULL OR pubchem_cid IS NOT NULL
+--       THEN 'identity_resolved_class_unconfirmed'
 --     WHEN standard_inchi_key IS NOT NULL
 --       AND canonical_structure_hash IS NOT NULL
 --       THEN 'probable'
@@ -304,3 +305,50 @@ SELECT
     AS purchasable_records_without_t_id
 FROM purchasable AS p
 LEFT JOIN terokit_t_ids AS t USING (source_record_id);
+
+-- 12. MARTS-DB enzyme, reaction, product, and catalog-promiscuity census.
+-- Multi-product association is an observed database property, not proof that
+-- every product is formed by one enzyme under the same conditions.
+WITH base AS (
+  SELECT *
+  FROM `terpedia-489015.terpedia_core.terpene_enzyme_evidence_marts`
+), per_enzyme AS (
+  SELECT
+    marts_enzyme_id,
+    COUNT(DISTINCT product_smiles) AS distinct_products
+  FROM base
+  WHERE NULLIF(TRIM(marts_enzyme_id), '') IS NOT NULL
+  GROUP BY marts_enzyme_id
+)
+SELECT
+  (SELECT COUNT(*) FROM base) AS reaction_enzyme_records,
+  (SELECT COUNT(DISTINCT marts_reaction_id) FROM base) AS distinct_reactions,
+  (SELECT COUNT(DISTINCT marts_enzyme_id) FROM base) AS distinct_enzymes,
+  (SELECT COUNT(DISTINCT NULLIF(TRIM(aminoacid_sequence), '')) FROM base)
+    AS distinct_sequences,
+  (SELECT COUNT(DISTINCT product_smiles) FROM base)
+    AS distinct_product_structures,
+  (SELECT COUNT(DISTINCT substrate_smiles) FROM base)
+    AS distinct_substrate_structures,
+  (SELECT COUNTIF(distinct_products > 1) FROM per_enzyme)
+    AS enzymes_with_multiple_products,
+  (SELECT AVG(distinct_products) FROM per_enzyme) AS mean_products_per_enzyme,
+  (SELECT MAX(distinct_products) FROM per_enzyme) AS max_products_per_enzyme;
+
+-- 13. Current T# metabolic-network coverage. Keep isomeric and
+-- stereo-insensitive matches separate.
+SELECT
+  structure_match_mode,
+  COUNT(*) AS edge_rows,
+  COUNT(DISTINCT CONCAT(product_terpene_id, '|', precursor_terpene_id))
+    AS distinct_product_precursor_pairs,
+  COUNT(DISTINCT product_terpene_id) AS product_t_ids,
+  COUNT(DISTINCT precursor_terpene_id) AS precursor_t_ids,
+  COUNT(DISTINCT reaction_id) AS reaction_rules
+FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_edges_current_latest_v3`
+GROUP BY structure_match_mode
+ORDER BY structure_match_mode;
+
+SELECT *
+FROM `terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3`
+ORDER BY stratum;

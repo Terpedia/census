@@ -52,6 +52,29 @@ Search performed 2026-09-03 for the requested phrase family: `“there are … N
    - Panel size: 25 labels
    - Example query: `"limonene"[All Fields]`
 
+10. **Engst et al. (2025), “MARTS-DB: a database of mechanisms and reactions
+    of terpene synthases.”** The primary publication describes a manually
+    curated database of experimentally characterized terpene synthases,
+    reactions, products, and mechanisms. Its publication snapshot reports more
+    than 2,850 reactions and 1,432 annotated enzymes; the Terpedia ingestion is
+    a later operational snapshot whose entity counts must be reported with its
+    own retrieval date and counting fields rather than treated as the paper's
+    count.
+    - https://doi.org/10.1186/s12859-025-06341-8
+    - https://pmc.ncbi.nlm.nih.gov/articles/PMC12797696/
+    - Dataset DOI reported by the article: https://doi.org/10.5281/zenodo.17709548
+
+11. **Chandrasekhar et al. (2024), “COCONUT 2.0: a comprehensive overhaul and
+    curation of the collection of open natural products database.”** COCONUT is
+    an aggregation of many source collections and preserves organism and
+    literature information where available. The authors explicitly caution
+    that invalid and non-natural-product entries inherited from source
+    databases can remain, supporting the manuscript's treatment of COCONUT
+    membership as candidate/source evidence rather than independent chemical
+    validation.
+    - https://doi.org/10.1093/nar/gkae1063
+    - https://academic.oup.com/nar/article/53/D1/D634/7908792
+
 ## Search-result leads not yet accepted as evidence
 
 - Popular cannabis education pages repeat 30,000, 55,000, or 200+ figures without consistently defining the counted universe.

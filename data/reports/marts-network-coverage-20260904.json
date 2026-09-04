@@ -1,0 +1,48 @@
+{
+  "queried_at_utc": "2026-09-04",
+  "marts_table": "terpedia-489015.terpedia_core.terpene_enzyme_evidence_marts",
+  "marts": {
+    "reaction_enzyme_records": 4639,
+    "distinct_reactions": 933,
+    "distinct_enzymes": 1532,
+    "distinct_sequences": 1523,
+    "distinct_product_structures": 840,
+    "distinct_substrate_structures": 46,
+    "enzymes_with_multiple_products": 863,
+    "enzymes_with_multiple_products_percent": 56.33,
+    "mean_products_per_enzyme": 2.953002610966059,
+    "max_products_per_enzyme": 27,
+    "promiscuity_boundary": "Distinct products linked to an enzyme record in MARTS-DB; not proof that all products are formed under the same conditions or in vivo."
+  },
+  "edge_table": "terpedia-489015.terpedia_core.terpene_metabolic_map_edges_current_latest_v3",
+  "isomeric": {
+    "edge_rows": 2170,
+    "distinct_product_precursor_pairs": 1492,
+    "product_t_ids": 827,
+    "precursor_t_ids": 811,
+    "reaction_rules": 1885
+  },
+  "stereo_insensitive": {
+    "edge_rows": 240426,
+    "distinct_product_precursor_pairs": 124928,
+    "product_t_ids": 5128,
+    "precursor_t_ids": 4917,
+    "reaction_rules": 2821
+  },
+  "coverage_dashboard": "terpedia-489015.terpedia_core.terpene_metabolic_map_coverage_dashboard_current_latest_v3",
+  "full_tstar_corpus": {
+    "corpus_nodes": 268924,
+    "connected_nodes": 5130,
+    "connected_percent": 1.9076,
+    "strict_connected_nodes": 828,
+    "strict_connected_percent": 0.3079
+  },
+  "classified_terpene_sizes": {
+    "corpus_nodes": 88342,
+    "connected_nodes": 2258,
+    "connected_percent": 2.5560,
+    "strict_connected_nodes": 373,
+    "strict_connected_percent": 0.4222
+  },
+  "network_boundary": "An edge is a structure-matched reaction hypothesis. Connectivity is not evidence of enzyme activity, physiological direction, organism-specific production, or flux."
+}

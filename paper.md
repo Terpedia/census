@@ -4,7 +4,20 @@
 
 ## Abstract
 
-The question “how many terpenes are there?” appears to invite a number, but the literature supplies a moving family of numbers. A 2007 review described more than 30,000 plant terpenoids; a 2020 review repeated a figure of more than 20,000 terpenes in nature; a 2020 thesis distinguished about 8,000 terpenes from 30,000 terpenoids; and a 2023 data-science study assembled 59,833 terpene records from a natural-products database. These statements are not necessarily contradictory. They count different chemical universes under definitions that are often left implicit. This paper will reconstruct the history of the estimates, identify the provenance of their round numbers, and propose a reproducible way to answer “how many” at a stated date and scope.
+The question “how many terpenes are there?” appears to invite a number, but the
+literature supplies a moving family of numbers. A 2007 review described more
+than 30,000 plant terpenoids; a 2020 review repeated more than 20,000 terpenes
+in nature; a 2020 thesis distinguished about 8,000 terpenes from 30,000
+terpenoids; and a 2023 study assembled 59,833 database records. These claims
+count different chemical universes. In a dated Terpedia snapshot, exact
+standard-InChI unioning of COCONUT and source-classified TeroKit records yields
+268,924 candidate terpene/terpenoid identities, of which 226,021 have a
+PubChem CID match. This is a candidate-identity census, not a count of
+independently verified natural terpenes: source classification, chemical
+identity, natural occurrence, experimental measurement, and biosynthetic
+evidence remain separate assertions. We therefore report counts as scoped,
+versioned tuples and quantify downstream coverage without treating it as proof
+of terpene status or biological production.
 
 ## 1. The short answer
 
@@ -12,7 +25,11 @@ There is no defensible single number without a counting rule. A careful provisio
 
 > **At least tens of thousands of naturally occurring terpene/terpenoid structures have been reported; the exact total depends on whether the count includes terpenoids, stereoisomers, conjugates, polymers, synonyms, and database-only records.**
 
-The commonly repeated “55,000” figure should therefore be presented as an estimate for the broad terpene/terpenoid universe, not as a precise count of strict terpene hydrocarbons.
+The commonly repeated “55,000” figure should therefore be presented as an
+estimate for the broad terpene/terpenoid universe, not as a precise count of
+strict terpene hydrocarbons. Terpedia currently contains **268,924 candidate
+identities in a two-source union**; it does not yet contain 268,924
+independently validated terpenes.
 
 ## 2. Why the number is unstable
 
@@ -66,6 +83,23 @@ For a future release, report a count as a tuple rather than a naked integer:
 
 For example: “59,833 records classified as terpenes in dataset X, version Y, downloaded on date Z; records are not asserted to equal unique natural terpene structures.”
 
+The census uses three reporting tiers that must not be collapsed:
+
+| Tier | Inclusion rule | Permitted interpretation |
+|---|---|---|
+| Source inventory | Every source row or source-declared member | Database volume only |
+| Candidate identity census | Source-declared members deduplicated under a stated chemical-identity rule | Candidate terpene/terpenoid structures |
+| Validated chemical census | Candidate identities passing an explicit chemical-class rule with auditable evidence | Confirmed structures within the declared definition |
+
+The current 268,924 result belongs to the **candidate identity** tier. A
+PubChem or ChEBI identifier resolves identity but does not by itself establish
+terpene membership. The validated tier requires an explicit source class or
+ontology path to a declared terpene/terpenoid class; structure heuristics may
+flag candidates for review but cannot confirm them. Counts should also be
+reported under multiple identity policies—stereochemistry-preserving,
+standard-InChI, connectivity-only, and parent structure after salt/mixture
+normalization—to expose sensitivity to deduplication choices.
+
 ## 6. Next work
 
 - Resolve every Google search hyperlink on the TerpID slide to its underlying source; record title, author, date, and page/section.
@@ -92,7 +126,11 @@ The first confirmed BigQuery inventory gives these raw row counts:
 | `terokit_reaction_molecules` | 9,584 | Reaction relation; not an independent molecule universe |
 | `terokit_reaction_enzymes` | 27,974 | Enzyme relation; not a molecule count |
 
-These are row counts, not the Terpedia total. The current defensible total is therefore **not yet a single integer** until BigQuery and RDF are joined on chemical identity. The primary deduplication key is `standard_inchi_key`/InChIKey; if absent, use a validated canonical-structure hash. Names and labels are discovery fields only and cannot establish identity.
+These are row counts, not the Terpedia total. The current two-source candidate
+total is reported below; a complete Terpedia-wide or validated chemical total
+does not yet exist because additional BigQuery and RDF sources remain outside
+the classified identity union. Names and labels are discovery fields only and
+cannot establish identity.
 
 The materialized TeroKit classification view provides the first source-grounded
 classification result. It contains **291,558 confirmed source-declared
@@ -122,7 +160,7 @@ total. A final release should still retain both the original and canonical
 keys and rerun the set operation after shared structure standardization. The result is stored in
 [`data/reports/coconut-terokit-union-20260903.json`](data/reports/coconut-terokit-union-20260903.json).
 
-### 7.2 Reaction-product coverage proxy
+### 7.2 Reaction-product and metabolic-network coverage
 
 TeroKit provides a useful network-completeness proxy because its reaction
 table distinguishes `substrate_ids` from `product_id`. In the local TeroKit
@@ -141,19 +179,42 @@ source-ID count and the stronger structure-identity count, separating:
 - products not yet confirmed as terpenoids; and
 - ambiguous product identities.
 
-Until that join is executed, **3,500 is the observed local product-ID
-universe, not the number of terpene products**. A product-side reaction edge
-also indicates a modeled biochemical transformation, not proof that the
-reaction occurs in a particular organism in vivo.
+The later TerpNet integration supersedes this preliminary source-ID proxy.
+Against the current T# corpus, the versioned v3 graph contains **827 T# product
+identities** in stereochemistry-preserving (`isomeric`) edges and **5,128 T#
+product identities** in the recall-oriented stereo-insensitive layer. The
+strict layer contains 1,492 distinct product–precursor pairs; the relaxed layer
+contains 124,928. The relaxed count is not added to the strict count because
+it may connect distinct stereoisomers.
+
+The coverage dashboard reports **5,130 of 268,924 T# identities (1.9076%)**
+connected by either layer and **828 (0.3079%)** connected by strict edges. For
+the 88,342 identities in canonical C10/C15/C20/C25/C30/C40 carbon-count
+buckets, 2,258 (2.5560%) are connected and 373 (0.4222%) are strictly
+connected. These are graph-coverage measures, not estimates of biological
+pathway completeness: an edge is a structure-matched reaction hypothesis and
+does not establish physiological direction, enzyme activity, organism-specific
+production, or flux.
+
+MARTS-DB contributes **4,639 reaction–enzyme assertions**, comprising 933
+distinct reaction IDs, 1,532 enzyme IDs, 1,523 distinct amino-acid sequences,
+840 product structures, and 46 substrate structures. Under a database-level
+promiscuity definition—more than one distinct product structure linked to the
+same enzyme ID—**863 enzymes (56.33%)** are multi-product, with a mean of 2.953
+products and a maximum of 27. This models observed catalog multiplicity; it
+does not prove that all linked products are formed under identical conditions
+or in vivo. The executed results and claim boundaries are preserved in
+[`data/reports/marts-network-coverage-20260904.json`](data/reports/marts-network-coverage-20260904.json).
 
 ### 7.3 Assigned Terpedia identity set
 
 To make the union addressable for downstream curation, the 268,924-member
 COCONUT–TeroKit set is materialized as the BigQuery table
 `terpedia-489015.terpedia_core.terpene_identity_set`. Each row receives a
-deterministic Terpedia identifier in the form `T000001`, `T000002`, and so on;
-the assignment is ordered lexically by the typed identity-set key and is
-therefore stable only for the stated snapshot.
+deterministic Terpedia identifier whose prefix records the carbon-count bucket
+(`T10`, `T15`, `T20`, `T25`, `T30`, `T40`, or `TXX`). Assignment within a
+bucket is ordered by carbon count and identity key and is therefore stable only
+for the stated snapshot.
 
 Each row retains the identity key type, InChI, InChIKey and SMILES when
 available, source memberships, source record identifiers, classification
@@ -199,7 +260,7 @@ the same field. The external source coverage currently materialized is:
 
 This does **not** yet support the stronger statement that every terpene in
 every Terpedia dataset is represented by a T#. The current T# set is defined
-from COCONUT terpenoids plus confirmed TeroKit terpenoids. For the six sources
+from COCONUT terpenoids plus confirmed TeroKit terpenoids. For the seven sources
 above, all records with a usable key in the T# cross-reference query are
 reported, but several sources contain many identities outside the current
 terpene union. Other Terpedia sources are not yet safely matchable at the
@@ -422,6 +483,37 @@ chemical-identity total.
 The strongest near-term sources are COCONUT and Dr. Duke for reported plant
 occurrence, the cannabis measurement view for sample composition, and LOTUS or
 Plant Metabolic Network for literature-linked and pathway-level expansion.
+
+## 11. Limitations and publication-grade completion criteria
+
+The principal numerical result is presently a **candidate identity census**.
+Its false-positive rate as a terpene/terpenoid census is unknown because no
+stratified per-record chemical-class validation has yet been completed. Its
+false-negative rate is also unknown because several Terpedia sources and
+structures lacking resolvable identifiers remain outside the union. The
+standard-InChI result is sensitive to normalization choices, and no current
+single number captures all stereoisomer, tautomer, salt, mixture, and parent
+structure interpretations.
+
+Before the candidate total is promoted to a validated census, a release must:
+
+1. materialize a per-T# classification-evidence table with explicit ontology
+   ancestry or source-class evidence, retaining ambiguous and excluded rows;
+2. report identity-count sensitivity under stereochemistry-preserving,
+   standard-InChI, connectivity-only, and normalized-parent policies;
+3. perform a preregistered, source- and scaffold-stratified manual audit and
+   report positive predictive value with confidence intervals;
+4. publish a source-flow table showing raw rows, structure-resolved rows,
+   classified candidates, exclusions, within-source duplicates, overlaps, and
+   final union membership;
+5. pin source releases, query text, software and RDKit versions, retrieval
+   timestamps, checksums, and immutable result artifacts; and
+6. distinguish missing evidence from negative evidence in every organism,
+   assay, reaction, literature, and commercial-availability result.
+
+Until these conditions are met, the defensible wording is “268,924 candidate
+terpene/terpenoid identities from the stated COCONUT–TeroKit snapshot,” not
+“268,924 terpenes.”
 
 ## References
 
